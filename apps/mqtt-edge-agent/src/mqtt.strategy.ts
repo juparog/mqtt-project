@@ -1,6 +1,5 @@
 import { Logger } from '@nestjs/common';
 import { MessageHandler, MqttOptions, ServerMqtt } from '@nestjs/microservices';
-import { CONNECT_EVENT } from '@nestjs/microservices/constants';
 import { MqttClient } from '@nestjs/microservices/external/mqtt-client.interface';
 import { IClientPublishOptions } from 'mqtt';
 import path from 'path';
@@ -35,7 +34,7 @@ export class MqttCustomStrategy extends ServerMqtt {
   }
 
   getOptions(): MqttOptions['options'] {
-    return this.mqttClient.options;
+    return this.mqttClient?.options;
   }
 
   addPrefixToMapKeys(prefix: string): void {
@@ -59,9 +58,9 @@ export class MqttCustomStrategy extends ServerMqtt {
 
     super.bindEvents(mqttClient);
 
-    mqttClient.on(CONNECT_EVENT, () => {
+    mqttClient.on('connect', async () => {
       this.logger.log(`Agent with id '${clientId}' connected to MQTT broker`);
-      this.logger.debug(`Publishing 'status'and 'info' agent`);
+      this.logger.debug(`Publishing 'status'and 'info' of agent`);
       this.publish('status', { status: 'online', clientId });
       this.publish(
         'info',

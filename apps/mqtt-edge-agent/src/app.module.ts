@@ -1,16 +1,17 @@
 import { DynamicModule, Module } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ServerMqtt } from '@nestjs/microservices';
 import { QoS } from '@nestjs/microservices/external/mqtt-options.interface';
 
 import { ConfigModule, ConfigService } from '@kuiiksoft/config';
 
-import { ServerMqtt } from '@nestjs/microservices';
 import { MQTT_TRANSPORT } from './app.constants';
 import { SerialInterfaceController } from './controllers';
 import { MqttCustomStrategy } from './mqtt.strategy';
 import { InterfaceManagerService } from './services';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, EventEmitterModule.forRoot()],
   controllers: [SerialInterfaceController],
   providers: [
     {
