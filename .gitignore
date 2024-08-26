@@ -40,3 +40,9 @@ Thumbs.db
 
 .nx/cache
 .nx/workspace-data
+
+# App configs
+.env*
+!.env.template
+/config/*.yaml
+!/config/config-template.yaml

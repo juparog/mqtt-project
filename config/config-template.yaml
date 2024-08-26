@@ -1,0 +1,19 @@
+# ##########################################################################################
+# Enviroment default vars                                                                  #
+# This is a template file, copy this file to config/config.yaml and edit it to your needs. #
+#                                                                                          #
+# The application takes its configuration with the following presidency:                   #
+#     config.yaml -> environment variables -> default values                               #
+# ##########################################################################################
+
+# Config to MQTT Edge Agent
+edgeAgent:
+  # MQTT Broker info
+  broker:
+    url: "mqtt://localhost:1883" # Broker mqtt url, env: KS_EDGEAGENT_BROKER_URL
+  # Client connection info
+  client:
+    id: "" # Id to authenticate with the broker, env: KS_EDGEAGENT_CLIENT_ID
+    token: "" # Token to authenticate with the broker, env: KS_EDGEAGENT_CLIENT_TOKEN
+
+    qos: 1 # General quality of service (option: 0,1,2), env: KS_EDGEAGENT_CLIENT_QOS
