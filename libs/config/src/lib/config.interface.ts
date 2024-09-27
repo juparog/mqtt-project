@@ -1,5 +1,6 @@
 export interface ConfigProps {
   edgeAgent: EdgeAgentConfig;
+  broker: BrokerConfig;
 }
 
 export interface EdgeAgentConfig {
@@ -12,4 +13,15 @@ export interface EdgeAgentConfig {
 
     qos: number;
   };
+}
+
+export interface BrokerConfig {
+  port: number;
+  id: string;
+  transport: string;
+  concurrency: number;
+  queueLimit: number;
+  maxClientsIdLength: number;
+  connectTimeout: number;
+  heartbeatInterval: number;
 }

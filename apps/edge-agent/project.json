@@ -1,0 +1,26 @@
+{
+  "name": "edge-agent",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/edge-agent/src",
+  "projectType": "application",
+  "tags": ["scope:apps"],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "edge-agent:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "edge-agent:build:development"
+        },
+        "production": {
+          "buildTarget": "edge-agent:build:production"
+        }
+      }
+    }
+  }
+}

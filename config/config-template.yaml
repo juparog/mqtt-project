@@ -8,12 +8,23 @@
 
 # Config to MQTT Edge Agent
 edgeAgent:
-  # MQTT Broker info
+  # MQTT Broker
   broker:
     url: "mqtt://localhost:1883" # Broker mqtt url, env: KS_EDGEAGENT_BROKER_URL
-  # Client connection info
+  # Client connection
   client:
     id: "" # Id to authenticate with the broker, env: KS_EDGEAGENT_CLIENT_ID
     token: "" # Token to authenticate with the broker, env: KS_EDGEAGENT_CLIENT_TOKEN
 
     qos: 1 # General quality of service (option: 0,1,2), env: KS_EDGEAGENT_CLIENT_QOS
+
+# Config to MQTT Broker
+broker:
+  port: 1883 # Port to listen on for MQTT connections, env: KS_BROKER_PORT
+  id: "kuiiksoft" # Aedes broker unique identifier (default: uuidv4()), env: KS_BROKER_ID
+  transport: "tcp" # Broker layer transport (tcp, ws), env: KS_BROKER_TRANSPORT
+  concurrency: 100 # Maximum number of concurrent messages delivered by mq, env: KS_BROKER_CONCURRENCY
+  queueLimit: 42 # Maximum number of queued messages before client session is established, env: KS_BROKER_QUEUELIMIT
+  maxClientsIdLength: 23 # Option to override MQTT 3.1.0 clients Id length limit, env: KS_BROKER_MAXCLIENTSIDLENGTH
+  connectTimeout: 30000 # Maximum waiting time in milliseconds waiting for a [CONNECT][CONNECT] packet, env: KS_BROKER_CONNECTTIMEOUT
+  heartbeatInterval: 60000 # Interval in millisconds at which server beats its health signal in $SYS/<aedes.id>/heartbeat topic., env: KS_BROKER_HEARTBEATINTERVAL

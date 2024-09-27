@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@kuiiksoft/config": ["libs/config/src/index.ts"]
+      "@kuiiksoft/config": ["libs/config/src/index.ts"],
+      "@kuiiksoft/mqtt-broker": ["libs/mqtt-broker/src/index.ts"],
+      "@kuiiksoft/mqtt-client": ["libs/mqtt-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

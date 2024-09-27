@@ -1,0 +1,26 @@
+{
+  "name": "broker",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/broker/src",
+  "projectType": "application",
+  "tags": ["scope:apps"],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "broker:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "broker:build:development"
+        },
+        "production": {
+          "buildTarget": "broker:build:production"
+        }
+      }
+    }
+  }
+}
