@@ -3,7 +3,7 @@ const { join } = require('path');
 
 module.exports = {
   output: {
-    path: join(__dirname, '../../dist/apps/mqtt-edge-agent'),
+    path: join(__dirname, '../../dist/apps/edge-agent'),
   },
   plugins: [
     new NxAppWebpackPlugin({

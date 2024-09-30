@@ -3,7 +3,7 @@ const { join } = require('path');
 
 module.exports = {
   output: {
-    path: join(__dirname, '../../dist/apps/mqtt-broker'),
+    path: join(__dirname, '../../dist/apps/broker'),
   },
   plugins: [
     new NxAppWebpackPlugin({

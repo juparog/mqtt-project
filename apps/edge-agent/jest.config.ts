@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'mqtt-edge-agent',
+  displayName: 'edge-agent',
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
@@ -8,4 +8,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/edge-agent',
+  passWithNoTests: true,
 };

@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'mqtt-broker',
+  displayName: 'broker',
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
@@ -8,4 +8,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/broker',
+  passWithNoTests: true,
 };
