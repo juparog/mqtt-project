@@ -3,7 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PortInfo } from '@serialport/bindings-interface';
 import { ReadlineParser, SerialPort } from 'serialport';
 
-import { MqttCustomStrategy } from '../mqtt.strategy';
+import { MqttClientService } from '@kuiiksoft/mqtt-client';
 import {
   SERIAL_DEVICE_DATA_TOPIC,
   SERIAL_DEVICE_ERROR_TOPIC,
@@ -19,7 +19,7 @@ export class SerialInterfaceService {
   private parser: ReadlineParser;
 
   constructor(
-    private readonly mqttService: MqttCustomStrategy,
+    private readonly mqttService: MqttClientService,
     private readonly props: SerialProps,
     private readonly eventEmitter: EventEmitter2
   ) {

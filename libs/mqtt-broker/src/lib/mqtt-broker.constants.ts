@@ -29,6 +29,8 @@ export const SystemTopics = {
   AUTHORIZE_FORWARD: '$MQTTBROKER/handle/authorizeForward',
   PUBLISHED: '$MQTTBROKER/handle/published',
   HEART_BEAT: /^\$?SYS\/([^/\n]*)\/heartbeat/,
+  CLIENT_REGISTER: /^\$?SYS\/([^/\n]*)\/new\/clients/,
+  CLIENT_DEREGISTER: /^\$?SYS\/([^/\n]*)\/disconnect\/clients/,
 };
 
 export enum BrokerTransport {

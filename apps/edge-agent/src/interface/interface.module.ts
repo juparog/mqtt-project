@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
+import { MqttClientService } from '@kuiiksoft/mqtt-client';
 import { MQTT_TRANSPORT } from '../app/app.constants';
-import { MqttCustomStrategy } from '../mqtt.strategy';
 import { InterfaceManagerService } from './interface-manager.service';
 import { SerialInterfaceController } from './serial-interface.controller';
 
@@ -12,7 +12,7 @@ import { SerialInterfaceController } from './serial-interface.controller';
   providers: [InterfaceManagerService],
 })
 export class InterfaceModule {
-  static forRoot(options: { mqttClient: MqttCustomStrategy }) {
+  static register(options: { mqttClient: MqttClientService }) {
     return {
       module: InterfaceModule,
       providers: [

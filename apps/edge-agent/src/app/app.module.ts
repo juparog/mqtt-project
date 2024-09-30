@@ -30,12 +30,7 @@ export class AppModule {
   static register(options: { mqttClient: MqttClientService }): DynamicModule {
     return {
       module: AppModule,
-      imports: [
-        // MqttClientModule.register({
-        //   mqttClient: options.mqttClient,
-        // }),
-        InterfaceModule.forRoot({ mqttClient: options.mqttClient }),
-      ],
+      imports: [InterfaceModule.register({ mqttClient: options.mqttClient })],
     };
   }
 }

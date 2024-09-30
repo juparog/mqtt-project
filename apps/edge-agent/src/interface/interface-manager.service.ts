@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
+import { MqttClientService } from '@kuiiksoft/mqtt-client';
 import { MQTT_TRANSPORT } from '../app/app.constants';
-import { MqttCustomStrategy } from '../mqtt.strategy';
 import {
   SERIAL_CONNECTIONS_TOPIC,
   SERIAL_INTERFACE,
@@ -21,7 +21,7 @@ export class InterfaceManagerService {
 
   constructor(
     @Inject(MQTT_TRANSPORT)
-    private readonly mqttService: MqttCustomStrategy,
+    private readonly mqttService: MqttClientService,
     private eventEmitter: EventEmitter2
   ) {}
 
@@ -71,7 +71,7 @@ export class InterfaceManagerService {
   }
 
   @OnEvent(SERIALPORT_DISCONNECT_EVENT)
-  handleOrderCreatedEvent(payload: { path: string }) {
+  handleDeviceDisconnectedEvent(payload: { path: string }) {
     this.closeSerialDevice(payload.path);
   }
 }

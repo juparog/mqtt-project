@@ -172,7 +172,17 @@ export class MqttBrokerResolver implements OnModuleInit {
 
     // Set up an event listener on the "publish" event of a broker object
     this.broker.on('publish', (packet, client) => {
-      let subscriber;
+      let subscriber: DiscoveredMethodWithMetaAndParameters[] = [];
+
+      if (
+        SystemTopics.CLIENT_REGISTER.test(packet.topic) ||
+        SystemTopics.CLIENT_DEREGISTER.test(packet.topic) ||
+        SystemTopics.HEART_BEAT.test(packet.topic)
+      ) {
+        packet['payload'] = JSON.stringify({
+          clientId: packet.payload.toString(),
+        });
+      }
 
       if (SystemTopics.HEART_BEAT.test(packet.topic)) {
         subscriber = this.getSubscribers(SystemTopics.HEART_BEAT, methods);

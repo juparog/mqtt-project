@@ -40,18 +40,6 @@ export class MqttClientService extends ServerMqtt {
     return this.mqttClient?.options;
   }
 
-  addPrefixToMapKeys(prefix: string): void {
-    const updatedMap = new Map<string, MessageHandler>();
-    for (const [key, value] of this.messageHandlers.entries()) {
-      const newKey = path.join(prefix, key).replaceAll('\\', '/');
-      updatedMap.set(newKey, value);
-      this.logger.log(`Mapped ${newKey} topic`);
-    }
-    (
-      this as unknown as { messageHandlers: Map<string, MessageHandler> }
-    ).messageHandlers = updatedMap;
-  }
-
   override bindEvents(mqttClient: MqttClient) {
     // se sobrescribe el mapa que contiene las keys para los manejadores de mensajes
     // para agrear un prefijo que identifique el agente
@@ -71,5 +59,17 @@ export class MqttClientService extends ServerMqtt {
     mqttClient.on('reconnect', () =>
       this.logger.error('Broker connection error, reconnecting...')
     );
+  }
+
+  private addPrefixToMapKeys(prefix: string): void {
+    const updatedMap = new Map<string, MessageHandler>();
+    for (const [key, value] of this.messageHandlers.entries()) {
+      const newKey = path.join(prefix, key).replaceAll('\\', '/');
+      updatedMap.set(newKey, value);
+      this.logger.log(`Mapped ${newKey} topic`);
+    }
+    (
+      this as unknown as { messageHandlers: Map<string, MessageHandler> }
+    ).messageHandlers = updatedMap;
   }
 }

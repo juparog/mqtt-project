@@ -1,7 +1,9 @@
 import {
   Client,
   Function,
+  OnClient,
   OnClientDisconnect,
+  OnHeartBeat,
   OnPreConnect,
   OnPublish,
   Packet,
@@ -28,12 +30,17 @@ export class AppService {
   }
 
   @OnPublish()
-  OnPublish(
-    @Topic() topic,
-    @Packet() packet,
-    @Payload('text') payload,
-    @Client() client
-  ) {
+  OnPublish(@Topic() topic, @Packet() packet, @Payload('json') payload) {
     console.log('Function: @OnPublish() - Topic:', topic, 'Payload:', payload);
+  }
+
+  @OnClient()
+  OnNewClient() {
+    console.log('Function: @OnClient()');
+  }
+
+  @OnHeartBeat()
+  OnHeartBeat(@Topic() topic) {
+    console.log('Function: @OnHeartBeat() - Topic:', topic);
   }
 }
