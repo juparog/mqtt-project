@@ -9,7 +9,7 @@ import {
   Packet,
   Payload,
   Topic,
-} from '@kuiiksoft/mqtt-broker';
+} from '@kuiiksoft/shared/mqtt-broker';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

@@ -1,0 +1,33 @@
+{
+  "name": "mqtt-client",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/mqtt-client/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "dist/{projectRoot}",
+        "currentVersionResolver": "git-tag"
+      }
+    }
+  },
+  "tags": ["scope:libs", "scope:shared-libs"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/shared/mqtt-client",
+        "tsConfig": "libs/shared/mqtt-client/tsconfig.lib.json",
+        "packageJson": "libs/shared/mqtt-client/package.json",
+        "main": "libs/shared/mqtt-client/src/index.ts",
+        "assets": ["libs/shared/mqtt-client/*.md"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}

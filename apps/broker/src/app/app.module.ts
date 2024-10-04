@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 
-import { BrokerTransport, MqttBrokerModule } from '@kuiiksoft/mqtt-broker';
+import {
+  BrokerTransport,
+  MqttBrokerModule,
+} from '@kuiiksoft/shared/mqtt-broker';
 
-import { ConfigModule, ConfigService } from '@kuiiksoft/config';
+import { ConfigModule, ConfigService } from '@kuiiksoft/core/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 

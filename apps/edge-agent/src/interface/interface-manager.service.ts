@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
-import { MqttClientService } from '@kuiiksoft/mqtt-client';
+import { MqttClientService } from '@kuiiksoft/shared/mqtt-client';
 import { MQTT_TRANSPORT } from '../app/app.constants';
 import {
   SERIAL_CONNECTIONS_TOPIC,

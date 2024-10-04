@@ -3,7 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PortInfo } from '@serialport/bindings-interface';
 import { ReadlineParser, SerialPort } from 'serialport';
 
-import { MqttClientService } from '@kuiiksoft/mqtt-client';
+import { MqttClientService } from '@kuiiksoft/shared/mqtt-client';
 import {
   SERIAL_DEVICE_DATA_TOPIC,
   SERIAL_DEVICE_ERROR_TOPIC,

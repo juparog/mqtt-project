@@ -15,9 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@kuiiksoft/config": ["libs/config/src/index.ts"],
-      "@kuiiksoft/mqtt-broker": ["libs/mqtt-broker/src/index.ts"],
-      "@kuiiksoft/mqtt-client": ["libs/mqtt-client/src/index.ts"]
+      "@kuiiksoft/core/config": ["libs/core/config/src/index.ts"],
+      "@kuiiksoft/shared/mqtt-broker": ["libs/shared/mqtt-broker/src/index.ts"],
+      "@kuiiksoft/shared/mqtt-client": ["libs/shared/mqtt-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

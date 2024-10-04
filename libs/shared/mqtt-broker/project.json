@@ -1,0 +1,33 @@
+{
+  "name": "mqtt-broker",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/mqtt-broker/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "dist/{projectRoot}",
+        "currentVersionResolver": "git-tag"
+      }
+    }
+  },
+  "tags": ["scope:libs", "scope:shared-libs"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/shared/mqtt-broker",
+        "tsConfig": "libs/shared/mqtt-broker/tsconfig.lib.json",
+        "packageJson": "libs/shared/mqtt-broker/package.json",
+        "main": "libs/shared/mqtt-broker/src/index.ts",
+        "assets": ["libs/shared/mqtt-broker/*.md"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}

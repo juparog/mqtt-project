@@ -1,7 +1,10 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
-import { MQTTCLIENT_INSTANCE, MqttClientService } from '@kuiiksoft/mqtt-client';
+import {
+  MQTTCLIENT_INSTANCE,
+  MqttClientService,
+} from '@kuiiksoft/shared/mqtt-client';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {

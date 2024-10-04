@@ -1,9 +1,12 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { QoS } from '@nestjs/microservices/external/mqtt-options.interface';
 
-import { ConfigModule, ConfigService } from '@kuiiksoft/config';
+import { ConfigModule, ConfigService } from '@kuiiksoft/core/config';
 
-import { MqttClientModule, MqttClientService } from '@kuiiksoft/mqtt-client';
+import {
+  MqttClientModule,
+  MqttClientService,
+} from '@kuiiksoft/shared/mqtt-client';
 import { InterfaceModule } from '../interface';
 
 @Module({
