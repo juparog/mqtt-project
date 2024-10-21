@@ -9,9 +9,7 @@ import { AppModule } from './app/app.module';
 
 async function bootstrap() {
   const logger = new Logger('main');
-  const appContext = await NestFactory.createApplicationContext(AppModule, {
-    logger: false,
-  });
+  const appContext = await NestFactory.createApplicationContext(AppModule);
 
   const mqttClient = appContext.get<MqttClientService>(MQTTCLIENT_INSTANCE);
 
@@ -22,7 +20,7 @@ async function bootstrap() {
 
   await app.listen();
   logger.log(
-    `🚀 MQTT Edge Agent '${mqttClient.getOptions().clientId}' is running.`
+    `🚀 MQTT Edge Agent id '${mqttClient.getOptions().clientId}' is running.`
   );
 }
 

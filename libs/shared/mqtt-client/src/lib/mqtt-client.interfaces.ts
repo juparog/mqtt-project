@@ -7,7 +7,14 @@ import {
 } from '@nestjs/common';
 import { MqttOptions } from '@nestjs/microservices';
 
-export type MqttClientModuleOptions = MqttOptions['options'];
+export interface MqttClientLoggerOptions {
+  useValue?: LoggerService;
+  useClass?: Type<LoggerService>;
+}
+
+export type MqttClientModuleOptions = MqttOptions['options'] & {
+  logger?: MqttClientLoggerOptions;
+};
 
 export interface MqttClientOptionsFactory {
   createMqttClientConnectOptions():
@@ -15,18 +22,12 @@ export interface MqttClientOptionsFactory {
     | MqttClientModuleOptions;
 }
 
-export interface MqttClientLoggerOptions {
-  useValue?: LoggerService;
-  useClass?: Type<LoggerService>;
-}
-
 export interface MqttClientModuleAsyncOptions
   extends Pick<ModuleMetadata, 'imports'> {
   inject?: (InjectionToken | OptionalFactoryDependency)[];
-  useExisting?: Type<MqttClientOptionsFactory>;
+  useExisting?: MqttClientOptionsFactory;
   useClass?: Type<MqttClientOptionsFactory>;
   useFactory?: (
     ...args: unknown[]
   ) => Promise<MqttClientModuleOptions> | MqttClientModuleOptions;
-  logger?: MqttClientLoggerOptions;
 }

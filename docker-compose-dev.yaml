@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  postgresql:
+    image: bitnami/postgresql:17
+    container_name: ks_mqttproject_postgresql
+    environment:
+      - POSTGRESQL_DATABASE=mqtt_project
+      - POSTGRESQL_USERNAME=admin
+      - POSTGRESQL_PASSWORD=admin
+      - POSTGRESQL_POSTGRES_PASSWORD=admin
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgresql_data:/bitnami/postgresql
+      - ./tools/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+    networks:
+      - ks_mqttproject_net
+
+  pgadmin:
+    image: dpage/pgadmin4:8.12
+    container_name: ks_mqttproject_pgadmin
+    depends_on:
+      - postgresql
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@kuiiksoft.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - '9001:80'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - ks_mqttproject_net
+
+volumes:
+  postgresql_data:
+    name: ks_mqttproject_postgresql_data_dev
+  pgadmin_data:
+    name: ks_mqttproject_pgadmin_data_dev
+
+networks:
+  ks_mqttproject_net:
+    driver: bridge

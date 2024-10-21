@@ -14,14 +14,14 @@ import { InterfaceModule } from '../interface';
     ConfigModule,
     MqttClientModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
-        const config = configService.getConfig();
+        const config = configService.getEdgeAgentConfig();
         return {
-          url: config.edgeAgent.broker.url,
-          clientId: config.edgeAgent.client.id,
-          username: config.edgeAgent.client.id,
-          password: config.edgeAgent.client.token,
+          url: config.broker.url,
+          clientId: config.client.id,
+          username: config.client.id,
+          password: config.client.token,
           subscribeOptions: {
-            qos: config.edgeAgent.client.qos as QoS,
+            qos: config.client.qos as QoS,
           },
         };
       },

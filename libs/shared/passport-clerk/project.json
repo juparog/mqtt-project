@@ -1,0 +1,19 @@
+{
+  "name": "passport-clerk",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/passport-clerk/src",
+  "projectType": "library",
+  "tags": ["scope:libs\"", "\"shared:passport-clerk"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/shared/passport-clerk",
+        "main": "libs/shared/passport-clerk/src/index.ts",
+        "tsConfig": "libs/shared/passport-clerk/tsconfig.lib.json",
+        "assets": ["libs/shared/passport-clerk/*.md"]
+      }
+    }
+  }
+}

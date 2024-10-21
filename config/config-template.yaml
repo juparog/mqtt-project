@@ -13,18 +13,74 @@ edgeAgent:
     url: "mqtt://localhost:1883" # Broker mqtt url, env: KS_EDGEAGENT_BROKER_URL
   # Client connection
   client:
-    id: "" # Id to authenticate with the broker, env: KS_EDGEAGENT_CLIENT_ID
+    id: ""    # Id to authenticate with the broker, env: KS_EDGEAGENT_CLIENT_ID
     token: "" # Token to authenticate with the broker, env: KS_EDGEAGENT_CLIENT_TOKEN
 
     qos: 1 # General quality of service (option: 0,1,2), env: KS_EDGEAGENT_CLIENT_QOS
 
 # Config to MQTT Broker
 broker:
-  port: 1883 # Port to listen on for MQTT connections, env: KS_BROKER_PORT
-  id: "kuiiksoft" # Aedes broker unique identifier (default: uuidv4()), env: KS_BROKER_ID
-  transport: "tcp" # Broker layer transport (tcp, ws), env: KS_BROKER_TRANSPORT
-  concurrency: 100 # Maximum number of concurrent messages delivered by mq, env: KS_BROKER_CONCURRENCY
-  queueLimit: 42 # Maximum number of queued messages before client session is established, env: KS_BROKER_QUEUELIMIT
-  maxClientsIdLength: 23 # Option to override MQTT 3.1.0 clients Id length limit, env: KS_BROKER_MAXCLIENTSIDLENGTH
-  connectTimeout: 30000 # Maximum waiting time in milliseconds waiting for a [CONNECT][CONNECT] packet, env: KS_BROKER_CONNECTTIMEOUT
-  heartbeatInterval: 60000 # Interval in millisconds at which server beats its health signal in $SYS/<aedes.id>/heartbeat topic., env: KS_BROKER_HEARTBEATINTERVAL
+  port: 1883                # Port to listen on for MQTT connections, env: KS_BROKER_PORT
+  id: "kuiiksoft"           # Aedes broker unique identifier (default: uuidv4()), env: KS_BROKER_ID
+  transport: "tcp"          # Broker layer transport (tcp, ws), env: KS_BROKER_TRANSPORT
+  concurrency: 100          # Maximum number of concurrent messages delivered by mq, env: KS_BROKER_CONCURRENCY
+  queueLimit: 42            # Maximum number of queued messages before client session is established, env: KS_BROKER_QUEUELIMIT
+  maxClientsIdLength: 23    # Option to override MQTT 3.1.0 clients Id length limit, env: KS_BROKER_MAXCLIENTSIDLENGTH
+  connectTimeout: 30000     # Maximum waiting time in milliseconds waiting for a [CONNECT][CONNECT] packet, env: KS_BROKER_CONNECTTIMEOUT
+  heartbeatInterval: 60000  # Interval in millisconds at which server beats its health signal in $SYS/<aedes.id>/heartbeat topic., env: KS_BROKER_HEARTBEATINTERVAL
+  # HTTP server
+  http:
+    port: 8081 # Port to listen on for HTTP connections, env: KS_BROKER_HTTP_PORT
+
+# Config to Database
+database:
+  type: "postgres"      # Database type (postgres, sqlite), env: KS_DATABASE_TYPE
+  host: "localhost"     # Database host, env: KS_DATABASE_HOST
+  port: 5432            # Database port, env: KS_DATABASE_PORT
+  username: "admin"     # Database username, env: KS_DATABASE_USERNAME
+  password: "admin"     # Database password, env: KS_DATABASE_PASSWORD
+  name: "mqtt_project"  # Database name, env: KS_DATABASE_NAME
+  ssl: false            # Database ssl connection, env: KS_DATABASE_SSL
+  synchronize: true     # Database synchronize, env: KS_DATABASE_SYNCHRONIZE
+  logging: true         # Database logging, env: KS_DATABASE_LOGGING
+
+# Config to Api
+api:
+  host: "0.0.0.0"     # Host to listen on for HTTP connections, env: KS_API_HOST
+  port: 8080          # Port to listen on for HTTP connections, env: KS_API_PORT
+  globalPrefix: "api" # Global prefix for all routes, env: KS_API_GLOBALPREFIX
+  # Auth
+  auth:
+    # JWT
+    jwt:
+      access:
+        publicKeyPath: "config/jwt-access-public.pem"     # Public key to verify the token, env: KS_API_AUTH_JWT_ACCESS_PUBLICKEY
+        privateKeyPath: "config/jwt-access-private.pem"   # Private key to sign the token, env: KS_API_AUTH_JWT_ACCESS_PRIVATEKEY
+        time: "15m"                                       # Time in string describing a time span zeit/ms. Eg: 60, "2 days", "10h", "7d", env: KS_API_AUTH_JWT_ACCESS_TIME
+      confirmation:
+        secret: ""      # Secret to sign the token, env: KS_API_AUTH_JWT_CONFIRMATION_SECRET
+        time: "1h"      # Time in string describing a time span zeit/ms. Eg: 60, "2 days", "10h", "7d", env: KS_API_AUTH_JWT_REFRESH_TIME
+      resetPassword:
+        secret: ""      # Secret to sign the token, env: KS_API_AUTH_JWT_RESETPASSWORD_SECRET
+        time: "1h"      # Time in string describing a time span zeit/ms. Eg: 60, "2 days", "10h", "7d", env: KS_API_AUTH_JWT_RESETPASSWORD_TIME
+      refresh:
+        secret: ""      # Secret to sign the token, env: KS_API_AUTH_JWT_REFRESH_SECRET
+        time: "7d"      # Time in string describing a time span zeit/ms. Eg: 60, "2 days", "10h", "7d", env: KS_API_AUTH_JWT_REFRESH_TIME
+    # Auth providers
+    provider:
+      google:
+        clientId: ""                                                      # Google client id, env: KS_API_AUTH_PROVIDERS_GOOGLE_CLIENTID
+        clientSecret: ""                                                  # Google client secret, env: KS_API_AUTH_PROVIDERS_GOOGLE_CLIENTSECRET
+        authorizationURL: "https://accounts.google.com/o/oauth2/v2/auth"  # Google authorization url, env: KS_API_AUTH_PROVIDERS_GOOGLE_AUTHORIZATIONURL
+        tokenURL: "https://www.googleapis.com/oauth2/v4/token"            # Google token url, env: KS_API_AUTH_PROVIDERS_GOOGLE_TOKENURL
+        userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"   # Google user profile url, env: KS_API_AUTH_PROVIDERS_GOOGLE_USERPROFILEURL
+        callbackURL: "http://localhost:8080/api/auth/google/callback"         # Google callback url, env: KS_API_AUTH_PROVIDERS_GOOGLE_CALLBACKURL
+        scope: ["email", "profile"]                                       # Google scope, env: KS_API_AUTH_PROVIDERS_GOOGLE_SCOPE
+      clerk:
+        clientId: ""                                                  # Clerk client id, env: KS_API_AUTH_PROVIDERS_CLERK_CLIENTID
+        clientSecret: ""                                              # Clerk client secret, env: KS_API_AUTH_PROVIDERS_CLERK_CLIENTSECRET
+        authorizationURL: ""                                          # Clerk authorization url, env: KS_API_AUTH_PROVIDERS_CLERK_AUTHORIZATIONURL
+        tokenURL: ""                                                  # Clerk token url, env: KS_API_AUTH_PROVIDERS_CLERK_TOKENURL
+        userProfileURL: ""                                            # Clerk user profile url, env: KS_API_AUTH_PROVIDERS_CLERK_USERPROFILEURL
+        callbackURL: "http://localhost:8080/api/auth/clerk/callback"  # Clerk callback url, env: KS_API_AUTH_PROVIDERS_CLERK_CALLBACKURL
+        scope: ["email", "profile"]                                   # Clerk scope, env: KS_API_AUTH_PROVIDERS_CLERK_SCOPE

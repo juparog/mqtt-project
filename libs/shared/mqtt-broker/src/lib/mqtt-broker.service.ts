@@ -1,18 +1,14 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import Aedes from 'aedes';
 
-import {
-  MQTTBROKER_INSTANCE,
-  MQTTBROKER_LOGGER_PROVIDER,
-} from './mqtt-broker.constants';
+import { MQTTBROKER_INSTANCE } from './mqtt-broker.constants';
 import { PubPacket } from './mqtt-broker.interfaces';
 
 @Injectable()
 export class MqttBrokerService {
-  constructor(
-    @Inject(MQTTBROKER_INSTANCE) private readonly broker: Aedes,
-    @Inject(MQTTBROKER_LOGGER_PROVIDER) private readonly logger: Logger
-  ) {}
+  private readonly logger = new Logger(MqttBrokerService.name);
+
+  constructor(@Inject(MQTTBROKER_INSTANCE) private readonly broker: Aedes) {}
 
   async publish(packet: PubPacket): Promise<PubPacket> {
     return new Promise((resolve, reject) => {

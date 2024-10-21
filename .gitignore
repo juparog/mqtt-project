@@ -33,6 +33,7 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+*.pem
 
 # System Files
 .DS_Store
@@ -46,3 +47,7 @@ Thumbs.db
 !.env.template
 /config/*.yaml
 !/config/config-template.yaml
+
+# Next.js
+.next
+out

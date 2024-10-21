@@ -25,6 +25,7 @@ export class SerialInterfaceController {
   async listSerialPorts(@Ctx() context: MqttContext) {
     this.logger.debug(`Topic: ${context.getTopic()}`);
     this.logger.log(`Publising serial ports avalaibles`);
+
     await this.interfaceManager.publishSerialPorts();
   }
 

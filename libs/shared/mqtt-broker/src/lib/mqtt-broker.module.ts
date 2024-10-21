@@ -3,7 +3,6 @@ import { DiscoveryModule } from '@nestjs/core';
 
 import { MQTTBROKER_OPTION_MODULE } from './mqtt-broker.constants';
 import { MqttBrokerDiscovery } from './mqtt-broker.discovery';
-import { MqttBrokerResolver } from './mqtt-broker.explorer';
 import {
   MqttBrokerModuleAsyncOptions,
   MqttBrokerModuleOptions,
@@ -11,8 +10,8 @@ import {
 import {
   createAsyncProviders,
   createBrokerProvider,
-  createLoggerProvider,
 } from './mqtt-broker.providers';
+import { MqttBrokerResolver } from './mqtt-broker.resolver';
 import { MqttBrokerService } from './mqtt-broker.service';
 
 @Global()
@@ -30,7 +29,6 @@ export class MqttBrokerModule {
           provide: MQTTBROKER_OPTION_MODULE,
           useValue: options,
         },
-        createLoggerProvider(),
         createBrokerProvider(),
       ],
     };
@@ -41,11 +39,7 @@ export class MqttBrokerModule {
   ): DynamicModule {
     return {
       module: MqttBrokerModule,
-      providers: [
-        ...createAsyncProviders(options),
-        createLoggerProvider(),
-        createBrokerProvider(),
-      ],
+      providers: [...createAsyncProviders(options), createBrokerProvider()],
     };
   }
 }

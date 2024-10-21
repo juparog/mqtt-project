@@ -1,6 +1,5 @@
 import {
   InjectionToken,
-  LoggerService,
   ModuleMetadata,
   OptionalFactoryDependency,
   Type,
@@ -19,11 +18,6 @@ export interface MqttBrokerOptionsFactory {
     | MqttBrokerModuleOptions;
 }
 
-export interface MqttBrokerLoggerOptions {
-  useValue?: LoggerService;
-  useClass?: Type<LoggerService>;
-}
-
 export interface MqttBrokerModuleAsyncOptions
   extends Pick<ModuleMetadata, 'imports'> {
   inject?: (InjectionToken | OptionalFactoryDependency)[];
@@ -32,7 +26,6 @@ export interface MqttBrokerModuleAsyncOptions
   useFactory?: (
     ...args: unknown[]
   ) => Promise<MqttBrokerModuleOptions> | MqttBrokerModuleOptions;
-  logger?: MqttBrokerLoggerOptions;
 }
 
 export interface PubPacket extends PublishPacket {

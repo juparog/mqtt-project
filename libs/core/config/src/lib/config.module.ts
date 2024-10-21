@@ -1,17 +1,22 @@
 import { Global, Module } from '@nestjs/common';
-import { ConfigModule as NestConfigModule } from '@nestjs/config';
+import { ENV_CONFIG_PROVIDER, YAML_CONFIG_PROVIDER } from './config.constants';
+import { EnvProvider, YamlProvider } from './config.providers';
 import { ConfigService } from './config.service';
-import configuration from './yaml.provider';
 
 @Global()
 @Module({
-  imports: [
-    NestConfigModule.forRoot({
-      load: [configuration],
-    }),
-  ],
   controllers: [],
-  providers: [ConfigService],
+  providers: [
+    {
+      provide: YAML_CONFIG_PROVIDER,
+      useClass: YamlProvider,
+    },
+    {
+      provide: ENV_CONFIG_PROVIDER,
+      useClass: EnvProvider,
+    },
+    ConfigService,
+  ],
   exports: [ConfigService],
 })
 export class ConfigModule {}

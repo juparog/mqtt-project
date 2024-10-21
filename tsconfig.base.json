@@ -7,6 +7,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
@@ -15,7 +16,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@kuiiksoft/common": ["libs/common/src/index.ts"],
       "@kuiiksoft/core/config": ["libs/core/config/src/index.ts"],
+      "@kuiiksoft/core/database": ["libs/core/database/src/index.ts"],
+      "@kuiiksoft/passport-clerk": ["libs/shared/passport-clerk/src/index.ts"],
       "@kuiiksoft/shared/mqtt-broker": ["libs/shared/mqtt-broker/src/index.ts"],
       "@kuiiksoft/shared/mqtt-client": ["libs/shared/mqtt-client/src/index.ts"]
     }

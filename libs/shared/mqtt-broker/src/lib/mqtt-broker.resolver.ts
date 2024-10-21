@@ -8,11 +8,7 @@ import Aedes, {
 import { IPacket } from 'mqtt-packet';
 import { isRegExp } from 'util/types';
 
-import {
-  MQTTBROKER_INSTANCE,
-  MQTTBROKER_LOGGER_PROVIDER,
-  SystemTopics,
-} from './mqtt-broker.constants';
+import { MQTTBROKER_INSTANCE, SystemTopics } from './mqtt-broker.constants';
 import { MqttBrokerDiscovery } from './mqtt-broker.discovery';
 import {
   DiscoveredMethodWithMeta,
@@ -47,10 +43,10 @@ type HandlerMethodParameters = {
 
 @Injectable()
 export class MqttBrokerResolver implements OnModuleInit {
+  private readonly logger = new Logger(MqttBrokerResolver.name);
   constructor(
     private readonly mqttBrokerDiscovery: MqttBrokerDiscovery,
-    @Inject(MQTTBROKER_INSTANCE) private readonly broker: Aedes,
-    @Inject(MQTTBROKER_LOGGER_PROVIDER) private readonly logger: Logger
+    @Inject(MQTTBROKER_INSTANCE) private readonly broker: Aedes
   ) {}
 
   async onModuleInit() {

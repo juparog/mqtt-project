@@ -1,12 +1,10 @@
 export const MQTTBROKER_OPTION_MODULE = Symbol('MQTTBROKER_OPTION_MODULE');
-export const MQTTBROKER_LOGGER_PROVIDER = Symbol('MQTTBROKER_LOGGER_PROVIDER');
 export const MQTTBROKER_INSTANCE = Symbol('MQTTBROKER_INSTANCE');
 
-export const LOGGER_KEY = 'MQTT Broker Module';
+export const LOGGER_KEY = 'MqttBrokerModule';
 
 export const KEY_SUBSCRIBE_OPTIONS = '__mqttbroker_subscribe_options';
 export const KEY_SUBSCRIBER_PARAMS = '__mqttbroker_subscriber_params';
-export const REGISTRY_METADATA_KEY = Symbol('__my-app--registry__');
 
 export const SystemTopics = {
   PUBLISH: '$MQTTBROKER/new/publish',

@@ -10,6 +10,7 @@ import { MqttClientModuleOptions } from './mqtt-client.interfaces';
 @Injectable()
 export class MqttClientService extends ServerMqtt {
   protected override readonly logger = new Logger(MqttClientService.name);
+
   constructor(
     @Inject(MQTTCLIENT_OPTION_MODULE) options: MqttClientModuleOptions
   ) {

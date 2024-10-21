@@ -6,7 +6,6 @@ import {
   BrokerTransport,
   LOGGER_KEY,
   MQTTBROKER_INSTANCE,
-  MQTTBROKER_LOGGER_PROVIDER,
   MQTTBROKER_OPTION_MODULE,
 } from './mqtt-broker.constants';
 import {
@@ -15,21 +14,13 @@ import {
   MqttBrokerOptionsFactory,
 } from './mqtt-broker.interfaces';
 
-export function createLoggerProvider(): Provider {
-  Logger.debug('Creating Logger Provider', LOGGER_KEY);
-  return {
-    provide: MQTTBROKER_LOGGER_PROVIDER,
-    useValue: new Logger('MqttBrokerModule'),
-  };
-}
-
 export function createBrokerProvider(): Provider {
   return {
     provide: MQTTBROKER_INSTANCE,
-    useFactory: async (options: MqttBrokerModuleOptions) => {
-      Logger.debug('Creating Broker Instance', LOGGER_KEY);
+    useFactory: async (options: MqttBrokerModuleOptions, logger: Logger) => {
+      logger.debug('Creating Broker Instance', LOGGER_KEY);
       if (!options.transport) {
-        Logger.debug('Setting Default Transport For Mqtt < TCP >', LOGGER_KEY);
+        logger.debug('Setting Default Transport For Mqtt < TCP >', LOGGER_KEY);
         options.transport = BrokerTransport.TCP;
       }
       // Create a new instance of Aedes broker
@@ -38,7 +29,7 @@ export function createBrokerProvider(): Provider {
       // Simple plain MQTT server using server-factory
       if (options.transport == BrokerTransport.TCP) {
         createServer(broker).listen(options.port);
-        Logger.debug(
+        logger.debug(
           `Creating TCP Server on Port ${options.port}...`,
           LOGGER_KEY
         );
@@ -47,16 +38,16 @@ export function createBrokerProvider(): Provider {
       // MQTT server over WebSocket using server-factory
       if (options.transport == BrokerTransport.WS) {
         createServer(broker, { ws: true }).listen(options.port);
-        Logger.debug(
+        logger.debug(
           `Creating WS Server on Port ${options.port}...`,
           LOGGER_KEY
         );
       }
 
-      Logger.log(`Broker Instance Created on Port ${options.port}`, LOGGER_KEY);
+      logger.log(`Broker Instance Created on Port ${options.port}`, LOGGER_KEY);
       return broker;
     },
-    inject: [MQTTBROKER_OPTION_MODULE],
+    inject: [MQTTBROKER_OPTION_MODULE, Logger],
   };
 }
 

@@ -11,7 +11,10 @@ import { createAsyncProviders } from './mqtt-client.providers';
 import { MqttClientService } from './mqtt-client.service';
 
 @Global()
-@Module({})
+@Module({
+  providers: [{ provide: MQTTCLIENT_INSTANCE, useClass: MqttClientService }],
+  exports: [{ provide: MQTTCLIENT_INSTANCE, useClass: MqttClientService }],
+})
 export class MqttClientModule {
   static forRoot(options: MqttClientModuleOptions): DynamicModule {
     return {
@@ -21,10 +24,6 @@ export class MqttClientModule {
           provide: MQTTCLIENT_OPTION_MODULE,
           useValue: options,
         },
-        {
-          provide: MQTTCLIENT_INSTANCE,
-          useClass: MqttClientService,
-        },
       ],
     };
   }
@@ -32,13 +31,7 @@ export class MqttClientModule {
   static forRootAsync(options: MqttClientModuleAsyncOptions): DynamicModule {
     return {
       module: MqttClientModule,
-      providers: [
-        ...createAsyncProviders(options),
-        {
-          provide: MQTTCLIENT_INSTANCE,
-          useClass: MqttClientService,
-        },
-      ],
+      providers: [...createAsyncProviders(options)],
     };
   }
 }
