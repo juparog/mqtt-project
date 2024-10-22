@@ -1,4 +1,3 @@
-// src/auth/auth.service.ts
 import { ConfigService } from '@kuiiksoft/core/config';
 import {
   BadRequestException,
@@ -15,14 +14,13 @@ import {
   SLUG_REGEX,
 } from '@kuiiksoft/common';
 
-import { CreateUserDto } from '../user';
-import { UserEntity } from '../user/user.entity';
-import { UserService } from '../user/user.service';
+import { CreateUserDto, UserEntity, UserService } from '../user';
 import {
   IAccessPayload,
   IEmailPayload,
   IRefreshPayload,
 } from './auth.interfaces';
+import { ChangePasswordDto } from './dtos';
 
 @Injectable()
 export class AuthService {
@@ -100,6 +98,39 @@ export class AuthService {
     };
   }
 
+  async verifyEmail(token: string): Promise<boolean> {
+    const user = await this.validateEmailConfirmationToken(token);
+    return this.userService.updateConfirmed(user.id);
+  }
+
+  async sendResetPasswordLink(email: string): Promise<true> {
+    const user = await this.userService.findByEmail(email);
+    const resetPasswordToken = await this.generateResetPasswordToken(user);
+    // TODO: send email with reset password token
+    return true;
+  }
+
+  async changePassword(
+    token: string,
+    changePasswordDto: ChangePasswordDto
+  ): Promise<IAuthResult> {
+    const userId = await this.validateResetPasswordToken(token);
+    const { password1, password2, password } = changePasswordDto;
+    this.comparePasswords(password1, password2);
+    const user = await this.userService.updatePassword(
+      userId,
+      password,
+      password1
+    );
+    return this.login(user);
+  }
+
+  async refreshToken(token: string): Promise<IAuthResult> {
+    const userId = await this.validateRefreshToken(token);
+    const user = await this.userService.findById(userId);
+    return this.login(user);
+  }
+
   async generateAccessToken(user: UserEntity): Promise<string> {
     const payload: IAccessPayload = { id: user.id };
     return this.jwtService.signAsync(payload, {
@@ -139,6 +170,31 @@ export class AuthService {
       algorithm: 'HS256',
       expiresIn: this.refreshJwtConfig.time,
     });
+  }
+
+  async validateRefreshToken(token: string): Promise<string> {
+    const payload = await this.jwtService.verifyAsync<IRefreshPayload>(token, {
+      secret: this.refreshJwtConfig.secret,
+    });
+    return payload.id;
+  }
+
+  async validateEmailConfirmationToken(token: string): Promise<UserEntity> {
+    const payload = await this.jwtService.verifyAsync<IEmailPayload>(token, {
+      secret: this.confirmationJwtConfig.secret,
+    });
+    const user = await this.userService.findById(payload.id);
+    if (user.confirmed) {
+      throw new BadRequestException('User already confirmed');
+    }
+    return user;
+  }
+
+  async validateResetPasswordToken(token: string): Promise<string> {
+    const payload = await this.jwtService.verifyAsync<IEmailPayload>(token, {
+      secret: this.resetPasswordJwtConfig.secret,
+    });
+    return payload.id;
   }
 
   private comparePasswords(password1: string, password2: string): void {

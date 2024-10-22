@@ -6,6 +6,7 @@ export interface BaseResponseProps {
   id: string;
   createdAt: Date;
   updatedAt: Date;
+  isActive: boolean;
 }
 
 export class ResponseBaseDto extends IdResponse {
@@ -13,6 +14,7 @@ export class ResponseBaseDto extends IdResponse {
     super(props.id);
     this.createdAt = new Date(props.createdAt).toISOString();
     this.updatedAt = new Date(props.updatedAt).toISOString();
+    this.isActive = props.isActive;
   }
 
   @ApiProperty({

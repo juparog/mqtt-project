@@ -23,6 +23,7 @@ export class CreateUserDto {
     example: 'jhon@email.com',
   })
   @IsEmail()
+  @Length(5, 255)
   email: string;
 
   @IsOptional()

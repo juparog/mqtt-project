@@ -9,6 +9,18 @@ export class UserRepository extends RepositoryBase<UserEntity> {
     super(UserEntity, manager);
   }
 
+  async createUser(user: Partial<UserEntity>): Promise<UserEntity> {
+    const newUser = this.create(user);
+    return this.save(newUser);
+  }
+
+  async findById(id: string, auth?: boolean): Promise<UserEntity | null> {
+    return this.findOne({
+      where: { id: String(id) },
+      select: this.getSelectOptions(auth),
+    });
+  }
+
   async findByEmail(email: string, auth?: boolean): Promise<UserEntity | null> {
     return this.findOne({
       where: { email: String(email) },
@@ -37,11 +49,6 @@ export class UserRepository extends RepositoryBase<UserEntity> {
       ],
       select: this.getSelectOptions(auth),
     });
-  }
-
-  async createUser(user: Partial<UserEntity>): Promise<UserEntity> {
-    const newUser = this.create(user);
-    return this.save(newUser);
   }
 
   private getSelectOptions(auth?: boolean): FindOptionsSelect<UserEntity> {

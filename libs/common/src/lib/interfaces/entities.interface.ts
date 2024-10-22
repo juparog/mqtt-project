@@ -20,16 +20,18 @@ export interface IUser extends IBaseUser {
 }
 
 export interface IAgent extends IBaseEntity {
-  id: string;
-  userId: string;
-  metadata: Record<string, unknown>;
+  name: string;
+  description: string;
   token: string;
+  userId: string;
+  devices?: IDevice[];
 }
 
 export interface IDevice extends IBaseEntity {
-  id: string;
-  agentId: string;
   name: string;
+  description: string;
+  type: string;
   status: 'active' | 'inactive' | 'maintenance';
-  configuration: Record<string, unknown>;
+  agentId: string;
+  metadata: Record<string, unknown>;
 }

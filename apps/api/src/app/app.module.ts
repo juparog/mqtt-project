@@ -3,8 +3,10 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { ConfigModule, ConfigService } from '@kuiiksoft/core/config';
 
-import { AuthModule } from '../auth/auth.module';
-import { UserModule } from '../user/user.module';
+import { AgentModule } from '../agent';
+import { AuthModule } from '../auth';
+import { DeviceModule } from '../device';
+import { UserModule } from '../user';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -31,6 +33,8 @@ import { AppService } from './app.service';
     }),
     UserModule,
     AuthModule,
+    DeviceModule,
+    AgentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

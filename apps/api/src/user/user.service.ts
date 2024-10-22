@@ -39,8 +39,8 @@ export class UserService {
     return user;
   }
 
-  async findById(id: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOneBy({ id });
+  async findById(id: string, auth?: boolean): Promise<UserEntity> {
+    const user = await this.userRepository.findById(id, auth);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
@@ -92,5 +92,23 @@ export class UserService {
       return existingUser;
     }
     return await this.userRepository.createUser(user);
+  }
+
+  async updatePassword(
+    userId: string,
+    password: string,
+    newPassword: string
+  ): Promise<UserEntity> {
+    const user = await this.findById(userId.toString());
+    if (!user.comparePassword(password, user.password)) {
+      throw new ConflictException('Invalid password');
+    }
+    user.password = newPassword;
+    return this.userRepository.save(user);
+  }
+
+  async updateConfirmed(id: string): Promise<boolean> {
+    const updated = await this.userRepository.update(id, { confirmed: true });
+    return updated.affected > 0 ? true : false;
   }
 }

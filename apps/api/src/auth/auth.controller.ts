@@ -1,21 +1,22 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   Post,
+  Query,
   Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { MessageDto } from '@kuiiksoft/common';
 
-import { CreateUserDto } from '../user';
-import { UserEntity } from '../user/user.entity';
+import { CreateUserDto, UserEntity } from '../user';
 import { AuthService } from './auth.service';
 import { CurrentUser, Public } from './decorators';
-import { LoginDto } from './dtos';
+import { ChangePasswordDto, EmailDto, LoginDto, RefreshTokenDto } from './dtos';
 import { ClerkAuthGuard, GoogleAuthGuard, LocalAuthGuard } from './guards';
 
 @ApiTags('auth')
@@ -70,16 +71,52 @@ export class AuthController {
     return user;
   }
 
-  // @Post('request-reset-password')
-  // async requestResetPassword(@Body() requestResetDto: RequestResetDto) {
-  //   return this.authService.sendResetPasswordLink(requestResetDto.email);
-  // }
+  @ApiQuery({
+    name: 'token',
+    description: 'Email confirmation token',
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEzZjQ5ZjIwLWYzZTktNGI2Zi1hYjUyLWQwM2IzYzY3ZjI5ZiIsImlhdCI6MTYxNzI2NzI2M30.5Gt9j1F1bW2b1X6v3z1ZI6XvqKQ9WQXKo7y5v3J5KQ',
+    required: true,
+    type: String,
+  })
+  @Get('verify-email')
+  async verifyEmail(token: string) {
+    if (!token) {
+      throw new BadRequestException('Token is required');
+    }
+    return this.authService.verifyEmail(token);
+  }
 
-  // @Post('reset-password')
-  // async resetPassword(
-  //   @Query('token') token: string,
-  //   @Body() resetPasswordDto: ResetPasswordDto
-  // ) {
-  //   return this.authService.resetPassword(token, resetPasswordDto.newPassword);
-  // }
+  @Public()
+  @Post('reset-password')
+  async requestResetPassword(@Body() emailDto: EmailDto): Promise<MessageDto> {
+    const sendEmail = this.authService.sendResetPasswordLink(emailDto.email);
+    return sendEmail
+      ? { message: 'Email sent with reset password instructions' }
+      : { message: 'Failed to send email' };
+  }
+
+  @ApiQuery({
+    name: 'token',
+    description: 'Reset token',
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEzZjQ5ZjIwLWYzZTktNGI2Zi1hYjUyLWQwM2IzYzY3ZjI5ZiIsImlhdCI6MTYxNzI2NzI2M30.5Gt9j1F1bW2b1X6v3z1ZI6XvqKQ9WQXKo7y5v3J5KQ',
+    required: true,
+    type: String,
+  })
+  @Post('change-password')
+  async resetPassword(
+    @Query('token') token: string,
+    @Body() changePasswordDto: ChangePasswordDto
+  ) {
+    if (!token) {
+      throw new BadRequestException('Token is required');
+    }
+    return this.authService.changePassword(token, changePasswordDto);
+  }
+
+  @Post('refresh-token')
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshToken(refreshTokenDto.token);
+  }
 }
