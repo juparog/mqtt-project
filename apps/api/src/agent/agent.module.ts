@@ -1,3 +1,4 @@
+import { PaginationService } from '@kuiiksoft/common';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AgentController } from './agent.controller';
@@ -8,7 +9,7 @@ import { AgentService } from './agent.service';
 @Module({
   imports: [TypeOrmModule.forFeature([AgentEntity])],
   controllers: [AgentController],
-  providers: [AgentRepository, AgentService],
+  providers: [AgentRepository, AgentService, PaginationService],
   exports: [AgentService],
 })
 export class AgentModule {}

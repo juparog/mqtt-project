@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { PaginationDto, PaginationService } from '@kuiiksoft/common';
-import { CreateUserDto } from './dtos';
+import { PaginationService, stringToBoolean } from '@kuiiksoft/common';
+import { CreateUserDto, UserPaginationDto } from './dtos';
 import { UserEntity } from './user.entity';
 import { UserRepository } from './user.repository';
 
@@ -77,13 +77,13 @@ export class UserService {
     return user;
   }
 
-  async findAllPaginated(
-    query?: PaginationDto
+  async findPaginated(
+    query?: UserPaginationDto
   ): Promise<[UserEntity[], number]> {
-    return this.paginationService.paginate<UserEntity>(
-      this.userRepository,
-      query
-    );
+    return this.paginationService.paginate<UserEntity>(this.userRepository, {
+      ...query,
+      isActive: stringToBoolean(query.isActive || 'true'),
+    });
   }
 
   async findOrCreate(email: string, user: UserEntity): Promise<UserEntity> {

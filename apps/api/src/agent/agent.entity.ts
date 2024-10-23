@@ -1,6 +1,8 @@
-import { BaseEntity, generateToken, IAgent, IDevice } from '@kuiiksoft/common';
+import { BaseEntity, IAgent, IDevice } from '@kuiiksoft/common';
+import bcrypt from 'bcrypt';
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   Index,
@@ -24,6 +26,7 @@ export class AgentEntity extends BaseEntity implements IAgent {
 
   @Column({
     type: 'text',
+    select: false,
   })
   token: string;
 
@@ -44,7 +47,15 @@ export class AgentEntity extends BaseEntity implements IAgent {
   devices?: IDevice[];
 
   @BeforeInsert()
-  protected generateToken(): void {
-    this.token = generateToken('at_');
+  @BeforeUpdate()
+  protected async generateToken(): Promise<void> {
+    if (this.token) {
+      const salt = await bcrypt.genSalt();
+      this.token = await bcrypt.hash(this.token, salt);
+    }
+  }
+
+  async compareToken(attempt: string, hashToken: string): Promise<boolean> {
+    return bcrypt.compare(attempt, hashToken);
   }
 }

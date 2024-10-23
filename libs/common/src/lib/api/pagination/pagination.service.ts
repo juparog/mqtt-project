@@ -1,5 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { FindManyOptions, FindOptionsOrder, ILike, Repository } from 'typeorm';
+import {
+  FindManyOptions,
+  FindOptionsOrder,
+  FindOptionsWhere,
+  ILike,
+  Repository,
+} from 'typeorm';
 
 import { PaginationDto } from './pagination.dto';
 
@@ -8,7 +14,7 @@ export class PaginationService {
   private readonly logger = new Logger(PaginationService.name);
   async paginate<T extends object>(
     repository: Repository<T>,
-    query: PaginationDto
+    query: PaginationDto & (FindOptionsWhere<T>[] | FindOptionsWhere<T>)
   ) {
     this.logger.log('Paginating...');
 
@@ -18,9 +24,18 @@ export class PaginationService {
     const order = (orderBy ? { [orderBy]: sort } : {}) as FindOptionsOrder<T>;
 
     let where = {};
+    const entityMetadata = repository.metadata;
     Object.keys(rest).forEach((key) => {
       if (key in rest) {
-        where = { ...where, [key]: ILike(`%${(rest as any)[key]}%`) }; // eslint-disable-line
+        const columnMetadata = entityMetadata.findColumnWithPropertyPath(key);
+        if (
+          columnMetadata &&
+          (columnMetadata.type === 'varchar' || columnMetadata.type === 'text')
+        ) {
+          where = { ...where, [key]: ILike(`%${rest[key]}%`) };
+        } else {
+          where = { ...where, [key]: rest[key] };
+        }
       }
     });
 
