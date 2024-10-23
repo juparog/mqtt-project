@@ -1,8 +1,3 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
@@ -16,12 +11,6 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   const port = configService.getBrokerConfig().http.port;
 
-  // const microservice = app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.TCP,
-  //   strategy: new MqttClient(),
-  // });
-
-  // await app.startAllMicroservices();
   await app.listen(port);
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`

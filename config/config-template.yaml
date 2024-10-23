@@ -30,7 +30,8 @@ broker:
   heartbeatInterval: 60000  # Interval in millisconds at which server beats its health signal in $SYS/<aedes.id>/heartbeat topic., env: KS_BROKER_HEARTBEATINTERVAL
   # HTTP server
   http:
-    port: 8081 # Port to listen on for HTTP connections, env: KS_BROKER_HTTP_PORT
+    port: 8081            # Port to listen on for HTTP connections, env: KS_BROKER_HTTP_PORT
+    hostname: "0.0.0.0"   # Hostname to listen on for HTTP connections, env: KS_BROKER_HTTP_HOSTNAME
 
 # Config to Database
 database:

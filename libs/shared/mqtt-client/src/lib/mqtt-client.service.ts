@@ -5,7 +5,7 @@ import { IClientPublishOptions } from 'mqtt';
 import path from 'path';
 
 import { MQTTCLIENT_OPTION_MODULE } from './mqtt-client.constants';
-import { MqttClientModuleOptions } from './mqtt-client.interfaces';
+import { MqttClientModuleOptions } from './mqtt-client.options';
 
 @Injectable()
 export class MqttClientService extends ServerMqtt {
@@ -44,7 +44,7 @@ export class MqttClientService extends ServerMqtt {
   override bindEvents(mqttClient: MqttClient) {
     // se sobrescribe el mapa que contiene las keys para los manejadores de mensajes
     // para agrear un prefijo que identifique el agente
-    const { clientId, url: brokerUrl } = this.mqttClient.options;
+    const { clientId } = this.mqttClient.options;
     const prefixPattern = `agent/${clientId}`;
     this.addPrefixToMapKeys(prefixPattern);
 
@@ -52,14 +52,23 @@ export class MqttClientService extends ServerMqtt {
 
     mqttClient.on('connect', async () => {
       this.logger.log(`Agent with id '${clientId}' connected to MQTT broker`);
-      this.logger.debug(`Publishing 'status'and 'info' of agent`);
-      this.publish('status', { status: 'online', clientId });
-      this.publish('info', { clientId, brokerUrl }, { retain: true });
+      this.publishStatusAndInfo();
     });
 
     mqttClient.on('reconnect', () =>
       this.logger.error('Broker connection error, reconnecting...')
     );
+
+    mqttClient.on('error', (error: Error) => {
+      this.logger.error(error);
+    });
+  }
+
+  private publishStatusAndInfo(): void {
+    const { clientId, url: brokerUrl } = this.mqttClient.options;
+    this.logger.debug(`Publishing 'status'and 'info' of agent`);
+    this.publish('status', { status: 'online', clientId });
+    this.publish('info', { clientId, brokerUrl }, { retain: true });
   }
 
   private addPrefixToMapKeys(prefix: string): void {

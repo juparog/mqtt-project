@@ -6,14 +6,14 @@ import {
   Payload,
 } from '@nestjs/microservices';
 
-import { InterfaceManagerService } from './interface-manager.service';
+import { InterfaceManagerService } from '../interface-manager.service';
 import {
   SERIAL_CLOSE_PATTERN,
   SERIAL_CONFIGURE_PATTERN,
   SERIAL_CONNECTION_PATTERN,
   SERIAL_LIST_PATTERN,
-} from './interface.constants';
-import { SerialCloseProps, SerialProps } from './interface.types';
+} from '../interface.constants';
+import { SerialCloseProps, SerialProps } from '../interface.types';
 
 @Controller()
 export class SerialInterfaceController {

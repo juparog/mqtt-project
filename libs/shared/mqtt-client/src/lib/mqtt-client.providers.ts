@@ -4,7 +4,7 @@ import { MQTTCLIENT_OPTION_MODULE } from './mqtt-client.constants';
 import {
   MqttClientModuleAsyncOptions,
   MqttClientOptionsFactory,
-} from './mqtt-client.interfaces';
+} from './mqtt-client.options';
 
 export function createAsyncOptionsProvider(
   options: MqttClientModuleAsyncOptions

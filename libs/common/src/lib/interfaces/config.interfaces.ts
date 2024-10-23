@@ -16,6 +16,7 @@ export interface IEdgeAgentConfig {
     token: string;
 
     qos: number;
+    reconnectRetries: boolean | number;
   };
 }
 
@@ -30,6 +31,7 @@ export interface IBrokerConfig {
   heartbeatInterval: number;
   http: {
     port: number;
+    hostname: string;
   };
 }
 

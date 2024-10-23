@@ -10,7 +10,7 @@ import {
   SERIALPORT_DISCONNECT_EVENT,
   SERIALPORT_STATUS,
 } from './interface.constants';
-import { SerialInterfaceService } from './serial-interface.service';
+import { SerialInterfaceService } from './serial/serial-interface.service';
 
 @Injectable()
 export class InterfaceManagerService {

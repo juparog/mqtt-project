@@ -73,6 +73,10 @@ export class ConfigService implements OnModuleInit {
           token: this.getConfigString('edgeAgent.client.token'),
 
           qos: this.getConfigNumber('edgeAgent.client.qos', 1),
+          reconnectRetries: this.getConfigNumber(
+            'edgeAgent.client.reconnectRetries',
+            5
+          ),
         },
       },
       broker: {
@@ -92,6 +96,7 @@ export class ConfigService implements OnModuleInit {
         ),
         http: {
           port: this.getConfigNumber('broker.http.port', 8081),
+          hostname: this.getConfigString('broker.http.hostname', '0.0.0.0'),
         },
       },
       db: {

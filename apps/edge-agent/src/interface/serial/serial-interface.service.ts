@@ -9,8 +9,8 @@ import {
   SERIAL_DEVICE_ERROR_TOPIC,
   SERIAL_DEVICE_STATUS_TOPIC,
   SERIALPORT_DISCONNECT_EVENT,
-} from './interface.constants';
-import { SerialProps } from './interface.types';
+} from '../interface.constants';
+import { SerialProps } from '../interface.types';
 
 export class SerialInterfaceService {
   private readonly logger = new Logger(SerialInterfaceService.name);

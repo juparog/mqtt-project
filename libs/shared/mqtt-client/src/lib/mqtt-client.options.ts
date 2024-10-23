@@ -1,19 +1,13 @@
 import {
   InjectionToken,
-  LoggerService,
   ModuleMetadata,
   OptionalFactoryDependency,
   Type,
 } from '@nestjs/common';
 import { MqttOptions } from '@nestjs/microservices';
 
-export interface MqttClientLoggerOptions {
-  useValue?: LoggerService;
-  useClass?: Type<LoggerService>;
-}
-
 export type MqttClientModuleOptions = MqttOptions['options'] & {
-  logger?: MqttClientLoggerOptions;
+  reconnectRetries?: boolean | number;
 };
 
 export interface MqttClientOptionsFactory {
