@@ -30,7 +30,7 @@ export class AppService {
   }
 
   @OnPublish()
-  OnPublish(@Topic() topic, @Packet() packet, @Payload('json') payload) {
+  OnPublish(@Topic() topic, @Packet() packet, @Payload('text') payload) {
     console.log('Function: @OnPublish() - Topic:', topic, 'Payload:', payload);
   }
 

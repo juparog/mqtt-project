@@ -17,7 +17,11 @@ export class MqttClientService extends ServerMqtt {
     super(options);
   }
 
-  publish(topic: string, message: unknown, options?: IClientPublishOptions) {
+  publish<T = unknown>(
+    topic: string,
+    message: T,
+    options?: IClientPublishOptions
+  ) {
     const { clientId } = this.mqttClient.options;
     this.mqttClient.publish(
       `agent/${clientId}/${topic}`,
@@ -56,7 +60,7 @@ export class MqttClientService extends ServerMqtt {
     });
 
     mqttClient.on('reconnect', () =>
-      this.logger.error('Broker connection error, reconnecting...')
+      this.logger.error('Reconnecting to MQTT broker...')
     );
 
     mqttClient.on('error', (error: Error) => {

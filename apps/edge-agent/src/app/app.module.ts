@@ -1,13 +1,11 @@
-import { DynamicModule, Global, Module } from '@nestjs/common';
-import { QoS } from '@nestjs/microservices/external/mqtt-options.interface';
-
 import { ConfigModule, ConfigService } from '@kuiiksoft/core/config';
-
 import {
   MqttClientModule,
   MqttClientService,
 } from '@kuiiksoft/shared/mqtt-client';
-import { InterfaceModule } from '../interface';
+import { DynamicModule, Global, Module } from '@nestjs/common';
+import { QoS } from '@nestjs/microservices/external/mqtt-options.interface';
+import { DeviceModule } from '../device';
 import { MQTT_TRANSPORT } from './app.constants';
 
 @Global()
@@ -39,7 +37,7 @@ export class AppModule {
     };
     return {
       module: AppModule,
-      imports: [InterfaceModule],
+      imports: [DeviceModule],
       providers: [transport],
       exports: [transport],
     };
