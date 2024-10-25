@@ -11,7 +11,7 @@ async function bootstrap() {
   const mqttClient = appContext.get(MqttClientService);
 
   const app = await NestFactory.createMicroservice(
-    AppModule.setup({ mqttClient }),
+    AppModule.setup({ transport: mqttClient }),
     { strategy: mqttClient, logger }
   );
 

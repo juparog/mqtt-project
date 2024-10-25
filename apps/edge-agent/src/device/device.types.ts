@@ -12,9 +12,9 @@ export enum DeviceEventType {
   CONFIGURE = 'device.configure',
   CONNECTE = 'device.connect',
   DATA_SEND = 'device.data.send',
+  DATA_RECEIVE = 'device.data.receive',
   DISCONNECT = 'device.disconnect',
   ERROR = 'device.error',
-  DATA_RECEIVE = 'device.data.receive',
 }
 
 export interface DeviceEvent {
