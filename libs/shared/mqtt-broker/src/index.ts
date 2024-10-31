@@ -32,5 +32,6 @@ export {
   Topic,
   Unsubscription,
 } from './lib/mqtt-broker.decorators';
-export * from './lib/mqtt-broker.module';
-export * from './lib/mqtt-broker.service';
+export { CredentialClient, DoneFunc } from './lib/mqtt-broker.interfaces';
+export { MqttBrokerModule } from './lib/mqtt-broker.module';
+export { MqttBrokerService } from './lib/mqtt-broker.service';

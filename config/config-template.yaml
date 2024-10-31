@@ -20,18 +20,18 @@ edgeAgent:
 
 # Config to MQTT Broker
 broker:
-  port: 1883                # Port to listen on for MQTT connections, env: KS_BROKER_PORT
   id: "kuiiksoft"           # Aedes broker unique identifier (default: uuidv4()), env: KS_BROKER_ID
+  port:
+    mqtt: 1883              # Port to listen on for MQTT connections, env: KS_BROKER_PORTS_MQTT
+    http: 8081              # Port to listen on for HTTP connections, env: KS_BROKER_PORTS_HTTP
+    ws: 8082                # Port to listen on for WS connections, env: KS_BROKER_PORTS_WS
+  hostname: "0.0.0.0"       # Hostname to listen on for MQTT connections, env: KS_BROKER_HOSTNAME
   transport: "tcp"          # Broker layer transport (tcp, ws), env: KS_BROKER_TRANSPORT
   concurrency: 100          # Maximum number of concurrent messages delivered by mq, env: KS_BROKER_CONCURRENCY
   queueLimit: 42            # Maximum number of queued messages before client session is established, env: KS_BROKER_QUEUELIMIT
   maxClientsIdLength: 23    # Option to override MQTT 3.1.0 clients Id length limit, env: KS_BROKER_MAXCLIENTSIDLENGTH
   connectTimeout: 30000     # Maximum waiting time in milliseconds waiting for a [CONNECT][CONNECT] packet, env: KS_BROKER_CONNECTTIMEOUT
   heartbeatInterval: 60000  # Interval in millisconds at which server beats its health signal in $SYS/<aedes.id>/heartbeat topic., env: KS_BROKER_HEARTBEATINTERVAL
-  # HTTP server
-  http:
-    port: 8081            # Port to listen on for HTTP connections, env: KS_BROKER_HTTP_PORT
-    hostname: "0.0.0.0"   # Hostname to listen on for HTTP connections, env: KS_BROKER_HTTP_HOSTNAME
 
 # Config to Database
 database:

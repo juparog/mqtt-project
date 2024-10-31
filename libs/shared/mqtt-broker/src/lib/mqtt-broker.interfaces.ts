@@ -4,12 +4,16 @@ import {
   OptionalFactoryDependency,
   Type,
 } from '@nestjs/common';
-import { AedesOptions, PublishPacket } from 'aedes';
-import { BrokerTransport } from './mqtt-broker.constants';
+import { AedesOptions, AuthenticateError, PublishPacket } from 'aedes';
 
 export interface MqttBrokerModuleOptions extends AedesOptions {
-  port: number;
-  transport?: BrokerTransport;
+  mqtt: {
+    port: number;
+  };
+  ws?: {
+    port: number;
+  };
+  hostname?: string;
 }
 
 export interface MqttBrokerOptionsFactory {
@@ -83,3 +87,13 @@ export interface Host {
   connectedClients: number;
   closed: boolean;
 }
+
+export type CredentialClient = {
+  username: string;
+  password: Buffer;
+};
+
+export type DoneFunc = (
+  error: AuthenticateError | null,
+  success: boolean | null
+) => void;

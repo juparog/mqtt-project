@@ -80,7 +80,12 @@ export class ConfigService implements OnModuleInit {
         },
       },
       broker: {
-        port: this.getConfigNumber('broker.port', 1883),
+        port: {
+          mqtt: this.getConfigNumber('broker.port.mqtt', 1883),
+          http: this.getConfigNumber('broker.port.http', 8081),
+          ws: this.getConfigNumber('broker.port.ws', 8082),
+        },
+        hostname: this.getConfigString('broker.hostname', '0.0.0.0'),
         id: this.getConfigString('broker.id', uuidv4()),
         transport: this.getConfigString('broker.transport', 'tcp'),
         concurrency: this.getConfigNumber('broker.concurrency', 1000),
@@ -94,10 +99,6 @@ export class ConfigService implements OnModuleInit {
           'broker.heartbeatInterval',
           60000
         ),
-        http: {
-          port: this.getConfigNumber('broker.http.port', 8081),
-          hostname: this.getConfigString('broker.http.hostname', '0.0.0.0'),
-        },
       },
       db: {
         type: this.getConfigString('database.type', 'postgres'),

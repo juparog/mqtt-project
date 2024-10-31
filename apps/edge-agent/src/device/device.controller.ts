@@ -8,7 +8,7 @@ import {
 } from '@nestjs/microservices';
 import { MQTT_TRANSPORT } from '../app/app.constants';
 import { DeviceManager } from './device.manager';
-import { DeviceEvent, DeviceEventType, DeviceStatus } from './device.types';
+import { DeviceEvent, DeviceEventTypes, DeviceStatus } from './device.types';
 
 @Controller()
 export class DeviceController {
@@ -51,7 +51,7 @@ export class DeviceController {
     const result = await this.manager.configureDevice(type, deviceId, options);
     this.client.publish<DeviceEvent>(`device/${deviceId}/event`, {
       deviceId,
-      eventType: DeviceEventType.CONFIGURE,
+      eventType: DeviceEventTypes.CONFIGURE,
       deviceType: type,
       status: result,
     });
@@ -70,7 +70,7 @@ export class DeviceController {
     const device = await this.manager.getDevice(deviceId);
     const result = await device.connect();
     this.client.publish<DeviceEvent>(`device/${deviceId}/event`, {
-      eventType: DeviceEventType.CONNECTE,
+      eventType: DeviceEventTypes.CONNECTE,
       deviceType: device.type,
       deviceId,
       status: result,
@@ -87,7 +87,7 @@ export class DeviceController {
     const device = await this.manager.getDevice(deviceId);
     const result = await device.disconnect();
     this.client.publish<DeviceEvent>(`device/${deviceId}/event`, {
-      eventType: DeviceEventType.DISCONNECT,
+      eventType: DeviceEventTypes.DISCONNECT,
       deviceType: device.type,
       deviceId,
       status: result,
@@ -106,10 +106,11 @@ export class DeviceController {
     const device = await this.manager.getDevice(deviceId);
     const result = await device.send(message);
     this.client.publish<DeviceEvent>(`device/${deviceId}/event`, {
-      eventType: DeviceEventType.DATA_SEND,
+      eventType: DeviceEventTypes.DATA_SEND,
       deviceType: device.type,
       deviceId,
       status: result,
+      payload: message,
     });
     return { deviceId, result: result === DeviceStatus.OK };
   }

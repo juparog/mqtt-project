@@ -1,11 +1,10 @@
-import { Module } from '@nestjs/common';
-
 import { ConfigModule, ConfigService } from '@kuiiksoft/core/config';
 import {
   BrokerTransport,
   MqttBrokerModule,
 } from '@kuiiksoft/shared/mqtt-broker';
-
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -15,9 +14,14 @@ import { AppService } from './app.service';
     MqttBrokerModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
         const config = configService.getBrokerConfig();
+        const wsConfig = config.port.ws ? { port: config.port.ws } : undefined;
         return {
-          port: config.port,
           id: config.id,
+          mqtt: {
+            port: config.port.mqtt,
+          },
+          ws: wsConfig,
+          hostname: config.hostname,
           transport: config.transport as BrokerTransport,
           concurrency: config.concurrency,
           queueLimit: config.queueLimit,
@@ -28,6 +32,7 @@ import { AppService } from './app.service';
       },
       inject: [ConfigService],
     }),
+    HttpModule,
   ],
   controllers: [AppController],
   providers: [AppService],

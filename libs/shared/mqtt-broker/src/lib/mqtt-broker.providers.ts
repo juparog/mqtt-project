@@ -3,7 +3,6 @@ import { createBroker } from 'aedes';
 import { createServer } from 'aedes-server-factory';
 
 import {
-  BrokerTransport,
   LOGGER_KEY,
   MQTTBROKER_INSTANCE,
   MQTTBROKER_OPTION_MODULE,
@@ -19,32 +18,31 @@ export function createBrokerProvider(): Provider {
     provide: MQTTBROKER_INSTANCE,
     useFactory: async (options: MqttBrokerModuleOptions) => {
       Logger.debug('Creating Broker Instance', LOGGER_KEY);
-      if (!options.transport) {
-        Logger.debug('Setting Default Transport For Mqtt < TCP >', LOGGER_KEY);
-        options.transport = BrokerTransport.TCP;
-      }
-      // Create a new instance of Aedes broker
+
       const broker = createBroker(options);
+      const hostname = options.hostname || 'localhost';
 
-      // Simple plain MQTT server using server-factory
-      if (options.transport == BrokerTransport.TCP) {
-        createServer(broker).listen(options.port);
-        Logger.debug(
-          `Creating TCP Server on Port ${options.port}...`,
+      const mqttPort = options.mqtt.port;
+      const mqttServer = createServer(broker);
+      mqttServer.listen(mqttPort, hostname, () => {
+        Logger.log(
+          `MQTT Server running on: mqtt://${hostname}:${mqttPort}`,
           LOGGER_KEY
         );
+      });
+
+      if (options.ws) {
+        const wsPort = options.ws.port;
+        const wsServer = createServer(broker, { ws: true });
+        wsServer.listen(wsPort, () => {
+          Logger.log(
+            `WebSocket Server running on: ws://${hostname}:${wsPort}`,
+            LOGGER_KEY
+          );
+        });
       }
 
-      // MQTT server over WebSocket using server-factory
-      if (options.transport == BrokerTransport.WS) {
-        createServer(broker, { ws: true }).listen(options.port);
-        Logger.debug(
-          `Creating WS Server on Port ${options.port}...`,
-          LOGGER_KEY
-        );
-      }
-
-      Logger.log(`Broker Instance Created on Port ${options.port}`, LOGGER_KEY);
+      Logger.log(`Broker Instance Created`, LOGGER_KEY);
       return broker;
     },
     inject: [MQTTBROKER_OPTION_MODULE],

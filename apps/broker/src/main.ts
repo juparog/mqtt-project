@@ -9,11 +9,12 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
-  const port = configService.getBrokerConfig().http.port;
+  const port = configService.getBrokerConfig().port.http;
+  const hostname = configService.getBrokerConfig().hostname;
 
-  await app.listen(port);
+  await app.listen(port, hostname);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 Application is running on: http://${hostname}:${port}/${globalPrefix}`
   );
 }
 

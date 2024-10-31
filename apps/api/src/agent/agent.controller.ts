@@ -1,4 +1,4 @@
-import { IUser } from '@kuiiksoft/common';
+import { IAuthAgentResult, IUser } from '@kuiiksoft/common';
 import {
   Body,
   Controller,
@@ -9,12 +9,13 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CurrentUser } from '../auth';
+import { CurrentUser, Public } from '../auth';
 import { AgentService } from './agent.service';
 import {
   AgentPaginatedDto,
   AgentPaginationDto,
   AgentResponseDto,
+  AuthenticateDto,
   CreateAgentDto,
   RegenerateTokenResponseDto,
 } from './dtos';
@@ -25,7 +26,7 @@ export class AgentController {
   constructor(private readonly agentService: AgentService) {}
 
   @Post()
-  async createUser(
+  async create(
     @Body() createAgentDto: CreateAgentDto,
     @CurrentUser() user: IUser
   ): Promise<AgentResponseDto> {
@@ -48,7 +49,7 @@ export class AgentController {
   }
 
   @Get()
-  async listAgents(
+  async list(
     @Query() query: AgentPaginationDto,
     @CurrentUser() user: IUser
   ): Promise<AgentPaginatedDto> {
@@ -61,5 +62,14 @@ export class AgentController {
       count,
       data: agents.map((agent) => new AgentResponseDto(agent)),
     });
+  }
+
+  @Public()
+  @Post('authenticate')
+  async authenticate(
+    @Body() authenticateDto: AuthenticateDto
+  ): Promise<IAuthAgentResult> {
+    const authenticated = await this.agentService.authenticate(authenticateDto);
+    return { authenticated };
   }
 }

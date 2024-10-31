@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IMqttTransport, MQTT_TRANSPORT } from '../app';
 import { DeviceAbstract } from './device.abstract';
 import { DeviceFactory } from './device.factory';
-import { DeviceEvent, DeviceEventType, DeviceStatus } from './device.types';
+import { DeviceEvent, DeviceEventTypes, DeviceStatus } from './device.types';
 
 @Injectable()
 export class DeviceManager {
@@ -39,6 +39,9 @@ export class DeviceManager {
   }
 
   async getDevice(deviceId: string): Promise<DeviceAbstract> {
+    if (!this.devices.has(deviceId)) {
+      throw new Error(`Device '${deviceId}' not found`);
+    }
     return this.devices.get(deviceId);
   }
 
@@ -55,7 +58,7 @@ export class DeviceManager {
   private deviceDataListener(deviceId: string, data: unknown): void {
     this.transport.publish<DeviceEvent>(`device/${deviceId}/event`, {
       deviceId,
-      eventType: DeviceEventType.DATA_RECEIVE,
+      eventType: DeviceEventTypes.DATA_RECEIVE,
       deviceType: this.devices.get(deviceId).type,
       status: DeviceStatus.OK,
       payload: data,
@@ -65,7 +68,7 @@ export class DeviceManager {
   private deviceDisconnectListener(deviceId: string): void {
     this.transport.publish<DeviceEvent>(`device/${deviceId}/event`, {
       deviceId,
-      eventType: DeviceEventType.DISCONNECT,
+      eventType: DeviceEventTypes.DISCONNECT,
       deviceType: this.devices.get(deviceId).type,
       status: DeviceStatus.DISCONNECTED,
     });
@@ -74,7 +77,7 @@ export class DeviceManager {
   private deviceErrorListener(deviceId: string, error: Error): void {
     this.transport.publish<DeviceEvent>(`device/${deviceId}/event`, {
       deviceId,
-      eventType: DeviceEventType.ERROR,
+      eventType: DeviceEventTypes.ERROR,
       deviceType: this.devices.get(deviceId).type,
       status: DeviceStatus.ERROR,
       payload: error.message,

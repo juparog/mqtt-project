@@ -20,19 +20,22 @@ export interface IEdgeAgentConfig {
   };
 }
 
+export interface IBrokerPort {
+  mqtt: number;
+  http: number;
+  ws?: number;
+}
+
 export interface IBrokerConfig {
-  port: number;
   id: string;
+  hostname: string;
+  port: IBrokerPort;
   transport: string;
   concurrency: number;
   queueLimit: number;
   maxClientsIdLength: number;
   connectTimeout: number;
   heartbeatInterval: number;
-  http: {
-    port: number;
-    hostname: string;
-  };
 }
 
 export interface IDatabaseConfig {

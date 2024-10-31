@@ -5,3 +5,7 @@ export interface IAuthResult {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface IAuthAgentResult {
+  authenticated: boolean;
+}

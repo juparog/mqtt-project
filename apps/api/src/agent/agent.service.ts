@@ -3,11 +3,15 @@ import {
   PaginationService,
   stringToBoolean,
 } from '@kuiiksoft/common';
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AgentEntity } from './agent.entity';
-import { AgentPaginationDto, CreateAgentDto } from './dtos';
+import { AgentPaginationDto, AuthenticateDto, CreateAgentDto } from './dtos';
 
 @Injectable()
 export class AgentService {
@@ -63,6 +67,19 @@ export class AgentService {
     await this.agentRepository.save(agent);
 
     return newToken;
+  }
+
+  async authenticate(authenticateDto: AuthenticateDto): Promise<boolean> {
+    const agent = await this.agentRepository.findOne({
+      where: { id: authenticateDto.agentId },
+      select: ['token'],
+    });
+
+    if (!agent) {
+      throw new NotFoundException('Agent not found');
+    }
+
+    return agent.compareToken(authenticateDto.token, agent.token);
   }
 
   private generateToken(): string {
