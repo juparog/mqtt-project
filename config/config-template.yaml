@@ -34,16 +34,27 @@ broker:
   heartbeatInterval: 60000  # Interval in millisconds at which server beats its health signal in $SYS/<aedes.id>/heartbeat topic., env: KS_BROKER_HEARTBEATINTERVAL
 
 # Config to Database
-database:
-  type: "postgres"      # Database type (postgres, sqlite), env: KS_DATABASE_TYPE
-  host: "localhost"     # Database host, env: KS_DATABASE_HOST
-  port: 5432            # Database port, env: KS_DATABASE_PORT
-  username: "admin"     # Database username, env: KS_DATABASE_USERNAME
-  password: "admin"     # Database password, env: KS_DATABASE_PASSWORD
-  name: "mqtt_project"  # Database name, env: KS_DATABASE_NAME
-  ssl: false            # Database ssl connection, env: KS_DATABASE_SSL
-  synchronize: true     # Database synchronize, env: KS_DATABASE_SYNCHRONIZE
-  logging: true         # Database logging, env: KS_DATABASE_LOGGING
+db:
+  type: "postgres"      # Database type (postgres, sqlite), env: KS_DB_TYPE
+  host: "localhost"     # Database host, env: KS_DB_HOST
+  port: 5432            # Database port, env: KS_DB_PORT
+  username: "admin"     # Database username, env: KS_DB_USERNAME
+  password: "admin"     # Database password, env: KS_DB_PASSWORD
+  name: "mqtt_project"  # Database name, env: KS_DB_NAME
+  ssl: false            # Database ssl connection, env: KS_DB_SSL
+  synchronize: true     # Database synchronize, env: KS_DB_SYNCHRONIZE
+  logging: true         # Database logging, env: KS_DB_LOGGING
+
+# Config to Redis Cache
+cache:
+  ttl: 60               # Cache time to live in seconds, env: KS_CACHE_TTL
+  schema: "redis"       # Cache schema (redis, rediss), env: KS_CACHE_SCHEMA
+  host: "localhost"     # Cache host, env: KS_CACHE_HOST
+  port: 6379            # Cache port, env: KS_CACHE_PORT
+  password: "admin"     # Cache password, env: KS_CACHE_PASSWORD
+  reconnectTime: 50     # Cache reconnect time in milliseconds, env: KS_CACHE_RECONNECTTIME
+  tls: false            # Cache tls connection, env: KS_CACHE_TLS
+  keepAlive: 1000       # Cache keep alive in milliseconds, env: KS_CACHE_KEEPALIVE
 
 # Config to Api
 api:
@@ -55,8 +66,10 @@ api:
     # JWT
     jwt:
       access:
-        publicKeyPath: "config/jwt-access-public.pem"     # Public key to verify the token, env: KS_API_AUTH_JWT_ACCESS_PUBLICKEY
-        privateKeyPath: "config/jwt-access-private.pem"   # Private key to sign the token, env: KS_API_AUTH_JWT_ACCESS_PRIVATEKEY
+        publicKey: ""                                     # Public key to verify the token, env: KS_API_AUTH_JWT_ACCESS_PUBLICKEY
+        publicKeyPath: "config/jwt-access-public.pem"     # Public key path to verify the token (takes precedence over the value in api.auth.jwt.access.publicKey when the file exists), env: KS_API_AUTH_JWT_ACCESS_PUBLICKEYPATH
+        privateKey: ""                                    # Private key to sign the token, env: KS_API_AUTH_JWT_ACCESS_PRIVATEKEY
+        privateKeyPath: "config/jwt-access-private.pem"   # Private key path to sign the token (takes precedence over the value in api.auth.jwt.access.privateKey when the file exists), env: KS_API_AUTH_JWT_ACCESS_PRIVATEKEYPATH
         time: "15m"                                       # Time in string describing a time span zeit/ms. Eg: 60, "2 days", "10h", "7d", env: KS_API_AUTH_JWT_ACCESS_TIME
       confirmation:
         secret: ""      # Secret to sign the token, env: KS_API_AUTH_JWT_CONFIRMATION_SECRET

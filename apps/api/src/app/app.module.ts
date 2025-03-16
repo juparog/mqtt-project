@@ -1,8 +1,8 @@
+import KeyvRedis from '@keyv/redis';
+import { ConfigModule, ConfigService } from '@kuiiksoft/core/config';
+import { CacheModule, CacheStore } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-
-import { ConfigModule, ConfigService } from '@kuiiksoft/core/config';
-
 import { AgentModule } from '../agent';
 import { AuthModule } from '../auth';
 import { DeviceModule } from '../device';
@@ -28,6 +28,28 @@ import { AppService } from './app.service';
           logging: dbConfig.logging,
           autoLoadEntities: true,
         } as TypeOrmModuleOptions;
+      },
+      inject: [ConfigService],
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: (configService: ConfigService) => {
+        const config = configService.getCacheConfig();
+        const redisStore = new KeyvRedis({
+          url: `${config.schema}://${config.host}:${config.port}`,
+          password: config.password,
+          socket: {
+            reconnectStrategy: (retries) =>
+              Math.min(retries * config.reconnectTime, 2000),
+            tls: config.tls,
+            keepAlive: config.keepAlive,
+          },
+        });
+        redisStore['del'] = redisStore.delete;
+        return {
+          store: redisStore as unknown as CacheStore,
+          ttl: config.ttl,
+        };
       },
       inject: [ConfigService],
     }),

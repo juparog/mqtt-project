@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class RefreshTokenDto {
   @ApiProperty({
@@ -6,5 +7,7 @@ export class RefreshTokenDto {
     example:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEzZjQ5ZjIwLWYzZTktNGI2Zi1hYjUyLWQwM2IzYzY3ZjI5ZiIsImlhdCI6MTYxNzI2NzI2M30.5Gt9j1F1bW2b1X6v3z1ZI6XvqKQ9WQXKo7y5v3J5KQ',
   })
+  @IsString()
+  @IsNotEmpty()
   token: string;
 }

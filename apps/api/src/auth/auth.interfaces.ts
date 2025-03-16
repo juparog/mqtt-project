@@ -10,6 +10,11 @@ export interface IAccessPayload {
   id: string;
 }
 
+export interface IStatusPayload {
+  callbackUrl: string;
+  redirectUrl: string;
+}
+
 export interface IAccessToken extends IAccessPayload, ITokenBase {}
 
 export interface IEmailPayload extends IAccessPayload {

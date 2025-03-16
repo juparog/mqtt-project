@@ -1,3 +1,6 @@
+import { Toaster } from 'sonner';
+import { ThemeProvider } from '../components/theme';
+import { ReactQueryProvider } from '../providers/react-query';
 import './global.css';
 
 export const metadata = {
@@ -12,7 +15,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          disableTransitionOnChange
+        >
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <Toaster />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

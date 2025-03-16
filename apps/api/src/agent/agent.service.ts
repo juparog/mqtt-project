@@ -1,5 +1,5 @@
 import {
-  generateToken,
+  generateCode,
   PaginationService,
   stringToBoolean,
 } from '@kuiiksoft/common';
@@ -83,6 +83,6 @@ export class AgentService {
   }
 
   private generateToken(): string {
-    return generateToken('at_');
+    return generateCode('at_');
   }
 }

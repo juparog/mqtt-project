@@ -1,10 +1,7 @@
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
-
-export function middleware(request: NextRequest) {
-  return NextResponse.redirect(new URL('/home', request.url));
-}
+export { auth as middleware } from './auth';
 
 export const config = {
-  matcher: '/about/:path*',
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|$|home|login|register|oauth-callback).*)',
+  ],
 };

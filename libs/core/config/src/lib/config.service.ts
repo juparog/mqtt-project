@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { readFileSync } from 'node:fs';
 import { v4 as uuidv4 } from 'uuid';
 
-import { IConfig } from '@kuiiksoft/common';
+import { generateCode, generateRSAKeyPair, IConfig } from '@kuiiksoft/common';
 
 import { ENV_CONFIG_PROVIDER, YAML_CONFIG_PROVIDER } from './config.constants';
 import { IConfigProvider } from './config.interfaces';
@@ -49,16 +49,23 @@ export class ConfigService implements OnModuleInit {
     return this.yamlConfig.get<T>(key) || envValueOrDefault;
   }
 
-  private getConfigFromFile(key: string, defaultValue: string): string {
+  private getConfigFromFile(
+    key: string,
+    defaultFile: string,
+    defaultValue: string
+  ): string {
+    const file = this.getConfigString(key, defaultFile);
     try {
-      return readFileSync(this.getConfigString(key, defaultValue), 'utf-8');
+      return readFileSync(file, 'utf-8');
     } catch (error) {
-      this.logger.error(`Error reading config key ${key}: ${error}`);
-      throw error;
+      this.logger.debug(`Error reading config key ${file}: ${error}`);
+      this.logger.debug('Return default value');
+      return defaultValue;
     }
   }
 
   getConfig(): IConfig {
+    const { privateKey, publicKey } = generateRSAKeyPair();
     return {
       id: this.getConfigString('id', uuidv4()),
       edgeAgent: {
@@ -101,15 +108,25 @@ export class ConfigService implements OnModuleInit {
         ),
       },
       db: {
-        type: this.getConfigString('database.type', 'postgres'),
-        host: this.getConfigString('database.host', 'localhost'),
-        port: this.getConfigNumber('database.port', 5432),
-        name: this.getConfigString('database.name', 'mqtt_project'),
-        username: this.getConfigString('database.username', 'admin'),
-        password: this.getConfigString('database.password', 'admin'),
-        synchronize: this.getConfigBoolean('database.synchronize', false),
-        logging: this.getConfigBoolean('database.logging', false),
-        ssl: this.getConfigBoolean('database.ssl', false),
+        type: this.getConfigString('db.type', 'postgres'),
+        host: this.getConfigString('db.host', '0.0.0.0'),
+        port: this.getConfigNumber('db.port', 5432),
+        name: this.getConfigString('db.name', 'mqtt_project'),
+        username: this.getConfigString('db.username', 'admin'),
+        password: this.getConfigString('db.password', 'admin'),
+        synchronize: this.getConfigBoolean('db.synchronize', false),
+        logging: this.getConfigBoolean('db.logging', false),
+        ssl: this.getConfigBoolean('db.ssl', false),
+      },
+      cache: {
+        ttl: this.getConfigNumber('cache.ttl', 60),
+        schema: this.getConfigString('cache.schema', 'redis'),
+        host: this.getConfigString('cache.host', '0.0.0.0'),
+        port: this.getConfigNumber('cache.port', 6379),
+        password: this.getConfigString('cache.password', 'admin'),
+        reconnectTime: this.getConfigNumber('cache.reconnectTime', 50),
+        tls: this.getConfigBoolean('cache.tls', false),
+        keepAlive: this.getConfigNumber('cache.keepAlive', 1000),
       },
       api: {
         host: this.getConfigString('api.host', '0.0.0.0'),
@@ -120,31 +137,52 @@ export class ConfigService implements OnModuleInit {
             access: {
               publicKey: this.getConfigFromFile(
                 'api.auth.jwt.access.publicKeyPath',
-                'config/jwt-access-public.pem'
+                'config/jwt-access-public.pem',
+                this.getConfigString('api.auth.jwt.access.publicKey', publicKey)
               ),
               privateKey: this.getConfigFromFile(
                 'api.auth.jwt.access.privateKeyPath',
-                'config/jwt-access-private.pem'
+                'config/jwt-access-private.pem',
+                this.getConfigString(
+                  'api.auth.jwt.access.publicKey',
+                  privateKey
+                )
               ),
               time: this.getConfigString('api.auth.jwt.access.time', '15m'),
             },
             confirmation: {
-              secret: this.getConfigString('api.auth.jwt.confirmation.secret'),
+              secret: this.getConfigString(
+                'api.auth.jwt.confirmation.secret',
+                generateCode('cs_')
+              ),
               time: this.getConfigString(
                 'api.auth.jwt.confirmation.time',
                 '1h'
               ),
             },
             resetPassword: {
-              secret: this.getConfigString('api.auth.jwt.resetPassword.secret'),
+              secret: this.getConfigString(
+                'api.auth.jwt.resetPassword.secret',
+                generateCode('rs_')
+              ),
               time: this.getConfigString(
                 'api.auth.jwt.resetPassword.time',
                 '1h'
               ),
             },
             refresh: {
-              secret: this.getConfigString('api.auth.jwt.refresh.secret'),
+              secret: this.getConfigString(
+                'api.auth.jwt.refresh.secret',
+                generateCode('rs_')
+              ),
               time: this.getConfigString('api.auth.jwt.refresh.time', '7d'),
+            },
+            utility: {
+              secret: this.getConfigString(
+                'api.auth.jwt.status.secret',
+                generateCode('ss_')
+              ),
+              time: this.getConfigString('api.auth.jwt.status.time', '5m'),
             },
           },
           provider: {
@@ -226,6 +264,10 @@ export class ConfigService implements OnModuleInit {
 
   getDbConfig(): IConfig['db'] {
     return this.getConfig().db;
+  }
+
+  getCacheConfig(): IConfig['cache'] {
+    return this.getConfig().cache;
   }
 
   getApiConfig(): IConfig['api'] {

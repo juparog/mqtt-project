@@ -21,10 +21,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       userProfileURL: googleConfig.userProfileURL,
       callbackURL: googleConfig.callbackURL,
       scope: googleConfig.scope,
+      passReqToCallback: true,
+      // state: true,
     });
   }
 
   async validate(
+    req: Request,
     accessToken: string,
     refreshToken: string,
     profile: IGoogleUserProfile,

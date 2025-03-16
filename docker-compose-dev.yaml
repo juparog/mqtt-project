@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   postgresql:
     image: bitnami/postgresql:17
@@ -32,11 +30,25 @@ services:
     networks:
       - ks_mqttproject_net
 
+  redis:
+    image: bitnami/redis:7.4.1
+    container_name: ks_mqttproject_redis
+    environment:
+      - REDIS_PASSWORD=admin
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/bitnami/redis/data
+    networks:
+      - ks_mqttproject_net
+
 volumes:
   postgresql_data:
     name: ks_mqttproject_postgresql_data_dev
   pgadmin_data:
     name: ks_mqttproject_pgadmin_data_dev
+  redis_data:
+    name: ks_mqttproject_redis_data_dev
 
 networks:
   ks_mqttproject_net:

@@ -3,6 +3,7 @@ export interface IConfig {
   edgeAgent: IEdgeAgentConfig;
   broker: IBrokerConfig;
   db: IDatabaseConfig;
+  cache: ICacheConfig;
   api: IApiConfig;
   email: IEmailConfig;
 }
@@ -50,6 +51,17 @@ export interface IDatabaseConfig {
   ssl: boolean;
 }
 
+export interface ICacheConfig {
+  ttl: number;
+  schema: string;
+  host: string;
+  port: number;
+  password: string;
+  reconnectTime: number;
+  tls: boolean;
+  keepAlive: number;
+}
+
 export interface ISingleJwtConfig {
   secret: string;
   time: string;
@@ -66,6 +78,7 @@ export interface IJwtConfig {
   confirmation: ISingleJwtConfig;
   resetPassword: ISingleJwtConfig;
   refresh: ISingleJwtConfig;
+  utility: ISingleJwtConfig;
 }
 
 export interface IAuthBaseOAuth2ProviderConfig {

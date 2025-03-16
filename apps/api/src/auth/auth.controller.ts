@@ -1,28 +1,42 @@
+import { MessageDto } from '@kuiiksoft/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   BadRequestException,
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
+  Inject,
   Post,
   Query,
   Req,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
-
-import { MessageDto } from '@kuiiksoft/common';
-
+import { Cache } from 'cache-manager';
 import { CreateUserDto, UserEntity } from '../user';
+import { IStatusPayload } from './auth.interfaces';
 import { AuthService } from './auth.service';
 import { CurrentUser, Public } from './decorators';
-import { ChangePasswordDto, EmailDto, LoginDto, RefreshTokenDto } from './dtos';
+import {
+  ChangePasswordDto,
+  EmailDto,
+  ExchangeCodeDto,
+  LoginDto,
+  RefreshTokenDto,
+} from './dtos';
 import { ClerkAuthGuard, GoogleAuthGuard, LocalAuthGuard } from './guards';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
+  ) {}
 
   @Public()
   @Post('register')
@@ -37,6 +51,7 @@ export class AuthController {
     type: LoginDto,
   })
   @UseGuards(LocalAuthGuard)
+  @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Request() req) {
     return this.authService.login(req.user);
@@ -50,8 +65,24 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleAuthRedirect(@Req() req) {
-    return this.authService.login(req.user);
+  async googleAuthRedirect(
+    @Req() req,
+    @Query('state') state: string,
+    @Res() res
+  ) {
+    const statusData =
+      await this.authService.validateUtilityToken<IStatusPayload>(state);
+
+    if (statusData.callbackUrl) {
+      const authorizationCode =
+        await this.authService.generateAuthorizationCode(req.user.id, state);
+      return res.redirect(
+        `${statusData.callbackUrl}?code=${authorizationCode}&redirectUrl=${statusData.redirectUrl}`
+      );
+    }
+
+    const loginData = await this.authService.login(req.user);
+    return loginData;
   }
 
   @Get('clerk')
@@ -64,6 +95,15 @@ export class AuthController {
   @UseGuards(ClerkAuthGuard)
   async clerkAuthRedirect(@Req() req) {
     return this.authService.login(req.user);
+  }
+
+  @Public()
+  @Post('exchange-code')
+  async exchangeCode(@Body() exchangeCodeDto: ExchangeCodeDto) {
+    return this.authService.exchangeCode(
+      exchangeCodeDto.code,
+      exchangeCodeDto.codeVerifier
+    );
   }
 
   @Get('profile')
@@ -115,6 +155,7 @@ export class AuthController {
     return this.authService.changePassword(token, changePasswordDto);
   }
 
+  @Public()
   @Post('refresh-token')
   async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
     return this.authService.refreshToken(refreshTokenDto.token);
